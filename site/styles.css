@@ -1,31 +1,57 @@
+html {
+  font-family: monospace;
+  color: white;
+  background-color: #000000;
+}
+
+.textbox {
+  float: left;
+  position: absolute;
+  top: 15vw;
+  left: 5vw;
+  background-color: rgba(255, 255, 255, .05);
+  padding: 2.5vw;
+  border-radius: 1vw;
+}
+
 #ex1 {
-  text-align: center;
   font-size: 1.5vw;
 }
 
 .title {
-  text-align: center;
-  font-family: monospace;
   font-weight: 700;
   font-size: 2vw;
 }
 
 .asciimoon {
   text-align: center;
-  font-family: monospace;
-  font-size: .5vw;
-  transform: scaleX(.85);
+  font-size: 0.5vw;
+  transform: scaleX(0.85);
   position: relative;
+  color: aqua;
+  border-radius: 1vw;
+}
+
+@media only screen and (max-width: 1200px) {
+  .textbox {
+    float: none;
+    position: static;
+    top: 0vw;
+    left: 0vw;
+  }
 }
 
 @media only screen and (max-width: 600px) {
+  .textbox {
+    text-align: center;
+  }
+
   .title {
     font-size: 10vw;
   }
 
   .asciimoon {
-    font-size: .75vw;
-    transform: scaleX(1);
+    font-size: 0.75vw;
   }
 
   #ex1 {

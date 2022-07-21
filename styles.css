@@ -1,18 +1,22 @@
 html {
   font-family: monospace;
-  background-color: black;
   color: white;
+  background-color: #000000;
 }
 
 .textbox {
   float: left;
   position: absolute;
   top: 15vw;
-  left: 10vw;
+  left: 5vw;
+  background-color: rgba(255, 255, 255, .05);
+  padding: 2.5vw;
+  border-radius: 1vw;
+  z-index: 200;
 }
 
-#ex1 {
-  font-size: 1.5vw;
+#moon-data {
+  font-size: 1vw;
 }
 
 .title {
@@ -21,11 +25,54 @@ html {
 }
 
 .asciimoon {
+  margin-top: 2.5vw;
   text-align: center;
   font-size: 0.5vw;
   transform: scaleX(0.85);
   position: relative;
   color: aqua;
+  border-radius: 1vw;
+}
+
+#moon-cover {
+  position: absolute;
+  background-color: rgba(0, 0, 0, .75);
+  height: 35vw;
+  padding: 5vw;
+  width: 35vw;
+  border-radius: 100%;
+  z-index: 100;
+  top: 3.5vw;
+  visibility: hidden;
+  animation: moon-cover 1.5s;
+}
+
+/* The animation code */
+@keyframes moon-cover {
+  from {width: 0vw;}
+  to {width: 35vw;}
+}
+
+/* The element to apply the animation to */
+div {
+
+  animation-name: example;
+  animation-duration: 4s;
+}
+
+.first-quarter {
+  left: 10vw;
+  visibility: visible!important;
+}
+
+.last-quarter {
+  right: 10vw;
+  visibility: visible!important;
+}
+
+.new-moon {
+  right: 27vw;
+  visibility: visible!important;
 }
 
 @media only screen and (max-width: 1200px) {
@@ -34,24 +81,20 @@ html {
     position: static;
     top: 0vw;
     left: 0vw;
+    text-align: center;
   }
 }
 
 @media only screen and (max-width: 600px) {
-  .textbox {
-    text-align: center;
-  }
-
   .title {
     font-size: 10vw;
   }
 
   .asciimoon {
     font-size: 0.75vw;
-    transform: scaleX(1);
   }
 
-  #ex1 {
+  #moon-data {
     font-size: 7.5vw;
   }
 }
