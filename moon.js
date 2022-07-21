@@ -23,6 +23,7 @@ function postMoonData(moon) {
   const day = new Date().getDate();
   const dayWeek = moon.phase[day].dayWeek;
   const moonPhase = moon.phase[day].phaseName;
+  const moonLighting = moon.phase[day].lighting;
   const html =
     "<div>" +
     "<b>" +
@@ -35,15 +36,22 @@ function postMoonData(moon) {
     "</b> " +
     moon.year +
     "</div>" +
-    "<div>" + "&#x22C4; &#x22C4; &#x22C4; " +
+    "<div>" +
+    "&#x22C4; &#x22C4; &#x22C4; " +
     moonPhase +
-    "</div>" +
-    "</div>";
+    " " +
+    moonLighting +
+    "<div>" +
+    "Next full moon: " + "<span class='next-full-moon'>" + moon.nextFullMoon; + "</span>" + "</div>"
+  "</div>" + "</div>";
   document.getElementById("moon-data").innerHTML = html;
   console.log(moonPhase);
   console.log(moon);
+  console.log(moonLighting);
 
   // SWITCH STATEMENT TO DETERMINE WHAT MOON PHASE TO DISPLAY BY COVERING SOME OF THE ASCII MOON WITH A ROUNDED SEMI-OPAQUE BLACK ELEMENT
+
+  // MAKE SURE TO STOP DISPLAYING DUE TO PHASE NAME & DISPLAY INSTEAD DUE TO LIGHTING %
 
   switch (moonPhase) {
     case "First quarter":
@@ -60,7 +68,6 @@ function postMoonData(moon) {
       break;
     // THERE IS NO CASE FOR FULL MOON
   }
-
 }
 
 const configMoon = {
