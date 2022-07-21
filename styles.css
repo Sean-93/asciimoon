@@ -97,6 +97,12 @@ div {
   
   #moon-cover {
     height: 60vw;
+    width: 40vw;
+  }
+
+  @keyframes moon-cover {
+    from {width: 0vw;}
+    to {width: 40vw;}
   }
 
   #moon-data {
