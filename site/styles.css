@@ -1,0 +1,34 @@
+#ex1 {
+  text-align: center;
+  font-size: 1.5vw;
+}
+
+.title {
+  text-align: center;
+  font-family: monospace;
+  font-weight: 700;
+  font-size: 2vw;
+}
+
+.asciimoon {
+  text-align: center;
+  font-family: monospace;
+  font-size: .5vw;
+  transform: scaleX(.85);
+  position: relative;
+}
+
+@media only screen and (max-width: 600px) {
+  .title {
+    font-size: 10vw;
+  }
+
+  .asciimoon {
+    font-size: .75vw;
+    transform: scaleX(1);
+  }
+
+  #ex1 {
+    font-size: 7.5vw;
+  }
+}

@@ -1,30 +1,53 @@
+html {
+  font-family: monospace;
+  background-color: black;
+  color: white;
+}
+
+.textbox {
+  float: left;
+  position: absolute;
+  top: 15vw;
+  left: 10vw;
+}
+
 #ex1 {
-  text-align: center;
   font-size: 1.5vw;
 }
 
 .title {
-  text-align: center;
-  font-family: monospace;
   font-weight: 700;
   font-size: 2vw;
 }
 
 .asciimoon {
   text-align: center;
-  font-family: monospace;
-  font-size: .5vw;
-  transform: scaleX(.85);
+  font-size: 0.5vw;
+  transform: scaleX(0.85);
   position: relative;
+  color: aqua;
+}
+
+@media only screen and (max-width: 1200px) {
+  .textbox {
+    float: none;
+    position: static;
+    top: 0vw;
+    left: 0vw;
+  }
 }
 
 @media only screen and (max-width: 600px) {
+  .textbox {
+    text-align: center;
+  }
+
   .title {
     font-size: 10vw;
   }
 
   .asciimoon {
-    font-size: .75vw;
+    font-size: 0.75vw;
     transform: scaleX(1);
   }
 
