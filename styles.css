@@ -94,6 +94,11 @@ div {
     font-size: 0.75vw;
   }
 
+  
+  #moon-cover {
+    height: 60vw;
+  }
+
   #moon-data {
     font-size: 7.5vw;
   }

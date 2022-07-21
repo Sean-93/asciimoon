@@ -1,3 +1,5 @@
+// REQUESTING API FOR MOON PHASES FROM icalendar37.net/lunar/api
+
 function load_moon_phases(obj, callback) {
   const gets = [];
   for (let i in obj) {
@@ -15,9 +17,12 @@ function load_moon_phases(obj, callback) {
   xmlhttp.send();
 }
 
-function example_1(moon) {
+// POSTING THE MOON DATA INTO DOM
+
+function postMoonData(moon) {
   const day = new Date().getDate();
   const dayWeek = moon.phase[day].dayWeek;
+  const moonPhase = moon.phase[day].phaseName;
   const html =
     "<div>" +
     "<b>" +
@@ -31,14 +36,31 @@ function example_1(moon) {
     moon.year +
     "</div>" +
     "<div>" + "&#x22C4; &#x22C4; &#x22C4; " +
-    moon.phase[day].phaseName +
-    (moon.phase[day].isPhaseLimit
-      ? ""
-      : Math.round(moon.phase[day].lighting) + "%") +
+    moonPhase +
     "</div>" +
     "</div>";
-  document.getElementById("ex1").innerHTML = html;
-  console.log(moon.phase[day].phaseName);
+  document.getElementById("moon-data").innerHTML = html;
+  console.log(moonPhase);
+  console.log(moon);
+
+  // SWITCH STATEMENT TO DETERMINE WHAT MOON PHASE TO DISPLAY BY COVERING SOME OF THE ASCII MOON WITH A ROUNDED SEMI-OPAQUE BLACK ELEMENT
+
+  switch (moonPhase) {
+    case "First quarter":
+      console.log("First quarter");
+      document.getElementById("moon-cover").classList.add("first-quarter");
+      break;
+    case "Last quarter":
+      console.log("Last quarter");
+      document.getElementById("moon-cover").classList.add("last-quarter");
+      break;
+    case "New Moon":
+      console.log("New Moon");
+      document.getElementById("moon-cover").classList.add("new-moon");
+      break;
+    // THERE IS NO CASE FOR FULL MOON
+  }
+
 }
 
 const configMoon = {
@@ -47,4 +69,4 @@ const configMoon = {
   year: new Date().getFullYear(),
 };
 
-load_moon_phases(configMoon, example_1);
+load_moon_phases(configMoon, postMoonData);
