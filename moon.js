@@ -30,10 +30,8 @@ function example_1(moon) {
     "</b> " +
     moon.year +
     "</div>" +
-    "<div>" +
+    "<div>" + "&#x22C4; &#x22C4; &#x22C4; " +
     moon.phase[day].phaseName +
-    " " +
-    "" +
     (moon.phase[day].isPhaseLimit
       ? ""
       : Math.round(moon.phase[day].lighting) + "%") +
