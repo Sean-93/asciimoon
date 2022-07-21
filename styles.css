@@ -42,7 +42,7 @@ html {
   width: 35vw;
   border-radius: 100%;
   z-index: 100;
-  top: 3.5vw;
+  top: 2.5vw;
   visibility: hidden;
   animation: moon-cover 1.5s;
 }
