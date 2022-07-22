@@ -18,7 +18,6 @@ html {
   position: absolute;
   top: 15vw;
   left: 5vw;
-  z-index: 20;
 }
 
 #moon-data {
