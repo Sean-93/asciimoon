@@ -22,10 +22,8 @@ html {
 
 #moon-data {
   font-size: 1vw;
-  background-color: rgba(255, 255, 255, 0.05);
-  padding: 2.5vw;
-  border-radius: 1vw;
-  animation: moon-data-grow 0.5s ease-out;
+  padding: 1.5vw;
+  animation: moon-data-grow 1.5s ease-out;
 }
 
 .next-full-moon {
@@ -34,22 +32,10 @@ html {
 
 @keyframes moon-data-grow {
   0% {
-    transform: scaleX(0);
-  }
-  33% {
-    transform: scaleX(0.33);
-  }
-  50% {
-    transform: scaleX(0.5);
-  }
-  75% {
-    transform: scaleX(0.75);
-  }
-  85% {
-    transform: scaleX(1.05);
+    transform: scale(0);
   }
   100% {
-    transform: scaleX(1);
+    transform: scale(1);
   }
 }
 
