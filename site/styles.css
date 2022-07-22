@@ -4,24 +4,51 @@ html {
   background-color: #000000;
 }
 
+.title {
+  font-weight: 700;
+  font-size: 2vw;
+  color: aqua;
+}
+
 .textbox {
   float: left;
   position: absolute;
   top: 15vw;
   left: 5vw;
-  background-color: rgba(255, 255, 255, .05);
-  padding: 2.5vw;
-  border-radius: 1vw;
   z-index: 200;
 }
 
 #moon-data {
   font-size: 1vw;
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 2.5vw;
+  border-radius: 1vw;
+  animation: moon-data-grow .5s ease-out;
 }
 
-.title {
-  font-weight: 700;
-  font-size: 2vw;
+.next-full-moon {
+  color: aqua!important;
+}
+
+@keyframes moon-data-grow {
+  0% {
+    transform: scaleX(0);
+  }
+  33% {
+    transform: scaleX(.33);
+  }
+  50% {
+    transform: scaleX(.5);
+  }
+  75% {
+    transform: scaleX(.75);
+  }
+  85% {
+    transform: scaleX(1.05);
+  }
+  100% {
+    transform: scaleX(1);
+  }
 }
 
 .asciimoon {
@@ -36,7 +63,7 @@ html {
 
 #moon-cover {
   position: absolute;
-  background-color: rgba(0, 0, 0, .75);
+  background-color: rgba(0, 0, 0, 0.75);
   height: 35vw;
   padding: 5vw;
   width: 35vw;
@@ -47,32 +74,32 @@ html {
   animation: moon-cover 1.5s;
 }
 
-/* The animation code */
 @keyframes moon-cover {
-  from {width: 0vw;}
-  to {width: 35vw;}
-}
-
-/* The element to apply the animation to */
-div {
-
-  animation-name: example;
-  animation-duration: 4s;
+  from {
+    width: 0vw;
+  }
+  to {
+    width: 35vw;
+  }
 }
 
 .first-quarter {
   left: 10vw;
-  visibility: visible!important;
+  visibility: visible !important;
 }
 
 .last-quarter {
   right: 10vw;
-  visibility: visible!important;
+  visibility: visible !important;
 }
 
 .new-moon {
   right: 27vw;
-  visibility: visible!important;
+  visibility: visible !important;
+}
+
+.light-first-bracket {
+
 }
 
 @media only screen and (max-width: 1200px) {
@@ -87,25 +114,28 @@ div {
 
 @media only screen and (max-width: 600px) {
   .title {
-    font-size: 10vw;
+    font-size: 7.5vw;
   }
 
   .asciimoon {
     font-size: 0.75vw;
   }
 
-  
   #moon-cover {
     height: 60vw;
     width: 40vw;
   }
 
   @keyframes moon-cover {
-    from {width: 0vw;}
-    to {width: 40vw;}
+    from {
+      width: 0vw;
+    }
+    to {
+      width: 40vw;
+    }
   }
 
   #moon-data {
-    font-size: 7.5vw;
+    font-size: 5vw;
   }
 }

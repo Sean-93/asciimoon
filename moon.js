@@ -42,12 +42,16 @@ function postMoonData(moon) {
     " " +
     moonLighting +
     "<div>" +
-    "Next full moon: " + "<span class='next-full-moon'>" + moon.nextFullMoon; + "</span>" + "</div>"
+    "Next full moon: " +
+    "<span class='next-full-moon'>" +
+    moon.nextFullMoon;
+  +"</span>" + "</div>";
   "</div>" + "</div>";
   document.getElementById("moon-data").innerHTML = html;
   console.log(moonPhase);
   console.log(moon);
   console.log(moonLighting);
+  console.log(moon.phase[day].isPhaseLimit);
 
   // SWITCH STATEMENT TO DETERMINE WHAT MOON PHASE TO DISPLAY BY COVERING SOME OF THE ASCII MOON WITH A ROUNDED SEMI-OPAQUE BLACK ELEMENT
 
