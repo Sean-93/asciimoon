@@ -40,7 +40,7 @@ function postMoonData(moon) {
     "&#x22C4; &#x22C4; &#x22C4; " +
     moonPhase +
     " " +
-    moonLighting +
+    moonLighting + "%" +
     "<div>" +
     "Next full moon: " +
     "<span class='next-full-moon'>" +
@@ -129,7 +129,7 @@ function postMoonData(moon) {
       break;
     // 90%
     case Math.round(moonLighting) > 80 &&
-      Math.round(moonLighting) < 90 &&
+      Math.round(moonLighting) < 99 &&
       "Waxing":
       document
         .getElementById("moon-cover")

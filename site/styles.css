@@ -11,7 +11,6 @@ html {
   font-weight: 700;
   font-size: 2vw;
   color: aqua;
-  z-index: 11;
 }
 
 .textbox {
@@ -19,7 +18,6 @@ html {
   position: absolute;
   top: 15vw;
   left: 5vw;
-  z-index: 20;
 }
 
 #moon-data {
@@ -76,13 +74,6 @@ html {
   top: 2.5vw;
   visibility: hidden;
   animation: moon-cover 1.5s;
-  clear: both;
-  display: inline-block;
-}
-
-.moon-cover-container {
-  clear: both;
-  display: inline-block;
 }
 
 @keyframes moon-cover {
@@ -196,12 +187,30 @@ html {
 }
 
 @media only screen and (max-width: 1200px) {
+  html {
+    overflow-x: hidden;
+    overflow-y: scroll;
+  }
+  
+  .textbox-container {
+    position: relative;
+    z-index: 20;
+  }
+
   .textbox {
     float: none;
     position: static;
     top: 0vw;
     left: 0vw;
     text-align: center;
+  }
+
+  .title {
+    font-size: 5vw;
+  }
+
+  #moon-data {
+    font-size: 3vw;
   }
 }
 
