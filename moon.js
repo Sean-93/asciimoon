@@ -37,6 +37,10 @@ function postMoonData(moon) {
     moon.year +
     "</div>" +
     "<div>" +
+    "Phase limit: " +
+    moon.phase[day].isPhaseLimit +
+    "</div>" +
+    "<div>" +
     "&#x22C4; &#x22C4; &#x22C4; " +
     moonPhase +
     " " +
@@ -45,10 +49,14 @@ function postMoonData(moon) {
     "<div>" +
     "Next full moon: " +
     "<span class='next-full-moon'>" +
-    moon.nextFullMoon;
-  +"</span>" + "</div>";
-  "</div>" + "</div>";
+    moon.nextFullMoon +
+    "</span>" +
+    "</div>" +
+    "</div>" +
+    "</div>";
   document.getElementById("moon-data").innerHTML = html;
+
+  // LOGGING DATA TO CONSOLE JUST CAUSE
   console.log(moon);
   console.log("Moon lighting: " + moonLighting + "%");
   console.log("Phase limit: " + moon.phase[day].isPhaseLimit);

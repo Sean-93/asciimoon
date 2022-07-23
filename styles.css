@@ -50,6 +50,10 @@ html {
   border-radius: 1vw;
 }
 
+.moon-cover-container {
+  overflow-x: hidden;
+}
+
 #moon-cover {
   position: absolute;
   background-color: rgba(0, 0, 0, 0.75);
@@ -180,7 +184,7 @@ html {
     overflow-x: hidden;
     overflow-y: scroll;
   }
-  
+
   .textbox-container {
     position: relative;
     z-index: 20;
@@ -202,7 +206,7 @@ html {
     height: 75vw;
     width: 75vw;
   }
-  
+
   @keyframes moon-cover {
     from {
       width: 0vw;
@@ -218,86 +222,85 @@ html {
 
   /* WAXING STAGES */
 
-.waxing-ten-percent {
-  left: 0vw;
-}
+  .waxing-ten-percent {
+    left: 0vw;
+  }
 
-.waxing-twenty-percent {
-  left: -5vw;
-}
+  .waxing-twenty-percent {
+    left: -5vw;
+  }
 
-.waxing-thirty-percent {
-  left: -10vw;
-}
+  .waxing-thirty-percent {
+    left: -10vw;
+  }
 
-.waxing-fourty-percent {
-  left: -20vw;
-}
+  .waxing-fourty-percent {
+    left: -20vw;
+  }
 
-.waxing-sixty-percent {
-  left: -40vw;
-}
+  .waxing-sixty-percent {
+    left: -40vw;
+  }
 
-.waxing-seventy-percent {
-  left: -50vw;
-}
+  .waxing-seventy-percent {
+    left: -50vw;
+  }
 
-.waxing-eighty-percent {
-  left: -55vw;
-}
+  .waxing-eighty-percent {
+    left: -55vw;
+  }
 
-.waxing-ninety-percent {
-  left: -60vw;
-}
+  .waxing-ninety-percent {
+    left: -60vw;
+  }
 
-/* WANING STAGES */
+  /* WANING STAGES */
 
-.waning-ten-percent {
-  right: 0vw;
-}
+  .waning-ten-percent {
+    right: 0vw;
+  }
 
-.waning-twenty-percent {
-  right: -5vw;
-}
+  .waning-twenty-percent {
+    right: -5vw;
+  }
 
-.waning-thirty-percent {
-  right: -15vw;
-}
+  .waning-thirty-percent {
+    right: -15vw;
+  }
 
-.waning-fourty-percent {
-  right: -25vw;
-}
+  .waning-fourty-percent {
+    right: -25vw;
+  }
 
-.waning-sixty-percent {
-  right: -35vw;
-}
+  .waning-sixty-percent {
+    right: -35vw;
+  }
 
-.waning-seventy-percent {
-  right: -45vw;
-}
+  .waning-seventy-percent {
+    right: -45vw;
+  }
 
-.waning-eighty-percent {
-  right: -50vw;
-}
+  .waning-eighty-percent {
+    right: -50vw;
+  }
 
-.waning-ninety-percent {
-  right: -60vw;
-}
+  .waning-ninety-percent {
+    right: -60vw;
+  }
 
-/* MAIN PHASES OF MOON (FULL EXCLUDED AS FULL IS DEFAULT) */
+  /* MAIN PHASES OF MOON (FULL EXCLUDED AS FULL IS DEFAULT) */
 
-.first-quarter {
-  left: -30vw;
-}
+  .first-quarter {
+    left: -30vw;
+  }
 
-.last-quarter {
-  right: -30vw;
-}
+  .last-quarter {
+    right: -30vw;
+  }
 
-.new-moon {
-  right: 5vw;
-}
-  
+  .new-moon {
+    right: 5vw;
+  }
 }
 
 /* 600 MEDIA QUERY */
