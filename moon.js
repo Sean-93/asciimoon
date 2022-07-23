@@ -40,7 +40,8 @@ function postMoonData(moon) {
     "&#x22C4; &#x22C4; &#x22C4; " +
     moonPhase +
     " " +
-    moonLighting + "%" +
+    moonLighting +
+    "%" +
     "<div>" +
     "Next full moon: " +
     "<span class='next-full-moon'>" +
@@ -52,10 +53,12 @@ function postMoonData(moon) {
   console.log(moonLighting);
   console.log(moon.phase[day].isPhaseLimit);
 
+  // ROUNDING THE LIGHTING TO MAKE IT CLEANER
+  const moonLightingRounded = Math.round(moonLighting);
+
   // SWITCH STATEMENTS BELOW TO DETERMINE WHICH MOON PHASE TO DISPLAY BY COVERING SOME OF THE ASCII MOON WITH A ROUNDED SEMI-OPAQUE BLACK ELEMENT
 
-  // THIS SWITCH STATEMENT IS FOR THE MAIN 4 MOON PHASES
-
+  // THIS SWITCH STATEMENT IS FOR THE MAIN 4 MOON PHASES AS WELL AS WAXING & WANING STAGES
   switch (moonPhase) {
     // MAIN PHASES
     case "First Quarter":
@@ -74,63 +77,47 @@ function postMoonData(moon) {
 
     // WAXING PHASES
     // 10%
-    case Math.round(moonLighting) > 0 &&
-      Math.round(moonLighting) < 10 &&
-      "Waxing":
+    case moonLightingRounded > 0 && moonLightingRounded < 10 && "Waxing":
       document.getElementById("moon-cover").classList.add("waxing-ten-percent");
       break;
     // 20%
-    case Math.round(moonLighting) > 10 &&
-      Math.round(moonLighting) < 20 &&
-      "Waxing":
+    case moonLightingRounded > 10 && moonLightingRounded < 20 && "Waxing":
       document
         .getElementById("moon-cover")
         .classList.add("waxing-thirty-percent");
       break;
     // 30%
-    case Math.round(moonLighting) > 20 &&
-      Math.round(moonLighting) < 30 &&
-      "Waxing":
+    case moonLightingRounded > 20 && moonLightingRounded < 30 && "Waxing":
       document
         .getElementById("moon-cover")
         .classList.add("waxing-thirty-percent");
       break;
     // 40%
-    case Math.round(moonLighting) > 30 &&
-      Math.round(moonLighting) < 40 &&
-      "Waxing":
+    case moonLightingRounded > 30 && moonLightingRounded < 40 && "Waxing":
       document
         .getElementById("moon-cover")
         .classList.add("waxing-fourty-percent");
       break;
     // 60%
-    case Math.round(moonLighting) > 50 &&
-      Math.round(moonLighting) < 60 &&
-      "Waxing":
+    case moonLightingRounded > 50 && moonLightingRounded < 60 && "Waxing":
       document
         .getElementById("moon-cover")
         .classList.add("waxing-sixty-percent");
       break;
     // 70%
-    case Math.round(moonLighting) > 60 &&
-      Math.round(moonLighting) < 70 &&
-      "Waxing":
+    case moonLightingRounded > 60 && moonLightingRounded < 70 && "Waxing":
       document
         .getElementById("moon-cover")
         .classList.add("waxing-seventy-percent");
       break;
     // 80%
-    case Math.round(moonLighting) > 70 &&
-      Math.round(moonLighting) < 80 &&
-      "Waxing":
+    case moonLightingRounded > 70 && moonLightingRounded < 80 && "Waxing":
       document
         .getElementById("moon-cover")
         .classList.add("waxing-eighty-percent");
       break;
     // 90%
-    case Math.round(moonLighting) > 80 &&
-      Math.round(moonLighting) < 99 &&
-      "Waxing":
+    case moonLightingRounded > 80 && moonLightingRounded < 99 && "Waxing":
       document
         .getElementById("moon-cover")
         .classList.add("waxing-ninety-percent");
@@ -138,63 +125,47 @@ function postMoonData(moon) {
 
     // WANING PHASES
     // 10%
-    case Math.round(moonLighting) > 0 &&
-      Math.round(moonLighting) < 10 &&
-      "Waning":
+    case moonLightingRounded > 0 && moonLightingRounded < 10 && "Waning":
       document.getElementById("moon-cover").classList.add("waning-ten-percent");
       break;
     // 20%
-    case Math.round(moonLighting) > 10 &&
-      Math.round(moonLighting) < 20 &&
-      "Waning":
+    case moonLightingRounded > 10 && moonLightingRounded < 20 && "Waning":
       document
         .getElementById("moon-cover")
         .classList.add("waning-thirty-percent");
       break;
     // 30%
-    case Math.round(moonLighting) > 20 &&
-      Math.round(moonLighting) < 30 &&
-      "Waning":
+    case moonLightingRounded > 20 && moonLightingRounded < 30 && "Waning":
       document
         .getElementById("moon-cover")
         .classList.add("waning-thirty-percent");
       break;
     // 40%
-    case Math.round(moonLighting) > 30 &&
-      Math.round(moonLighting) < 40 &&
-      "Waning":
+    case moonLightingRounded > 30 && moonLightingRounded < 40 && "Waning":
       document
         .getElementById("moon-cover")
         .classList.add("waning-fourty-percent");
       break;
     // 60%
-    case Math.round(moonLighting) > 50 &&
-      Math.round(moonLighting) < 60 &&
-      "Waning":
+    case moonLightingRounded > 50 && moonLightingRounded < 60 && "Waning":
       document
         .getElementById("moon-cover")
         .classList.add("waning-sixty-percent");
       break;
     // 70%
-    case Math.round(moonLighting) > 60 &&
-      Math.round(moonLighting) < 70 &&
-      "Waning":
+    case moonLightingRounded > 60 && moonLightingRounded < 70 && "Waning":
       document
         .getElementById("moon-cover")
         .classList.add("waning-seventy-percent");
       break;
     // 80%
-    case Math.round(moonLighting) > 70 &&
-      Math.round(moonLighting) < 80 &&
-      "Waning":
+    case moonLightingRounded > 70 && moonLightingRounded < 80 && "Waning":
       document
         .getElementById("moon-cover")
         .classList.add("waning-eighty-percent");
       break;
     // 90%
-    case Math.round(moonLighting) > 80 &&
-      Math.round(moonLighting) < 99 &&
-      "Waning":
+    case moonLightingRounded > 80 && moonLightingRounded < 99 && "Waning":
       document
         .getElementById("moon-cover")
         .classList.add("waning-ninety-percent");
