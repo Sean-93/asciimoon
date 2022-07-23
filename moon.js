@@ -9,7 +9,7 @@ function load_moon_phases(obj, callback) {
   const xmlhttp = new XMLHttpRequest();
   const url = "https://www.icalendar37.net/lunar/api/?" + gets.join("&");
   xmlhttp.onreadystatechange = function () {
-    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+    if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
       callback(JSON.parse(xmlhttp.responseText));
     }
   };
@@ -50,8 +50,8 @@ function postMoonData(moon) {
   "</div>" + "</div>";
   document.getElementById("moon-data").innerHTML = html;
   console.log(moon);
-  console.log(moonLighting);
-  console.log(moon.phase[day].isPhaseLimit);
+  console.log("Moon lighting: " + moonLighting + "%");
+  console.log("Phase limit: " + moon.phase[day].isPhaseLimit);
 
   // ROUNDING THE LIGHTING TO MAKE IT CLEANER
   const moonLightingRounded = Math.round(moonLighting);
