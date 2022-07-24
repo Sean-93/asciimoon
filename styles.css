@@ -1,11 +1,15 @@
+/* TARGETING THE BODY + HTML WITH OVERFLOW HIDDEN AND POSITION RELATIVE IS THE ONLY WAY TO STOP THE MOON COVER FROM OVERFLOWING */
+
 html {
   overflow: hidden;
+  position: relative;
 }
 
 body {
   font-family: monospace;
   color: white;
   background-color: #000000;
+  position: relative;
   overflow: hidden;
 }
 
