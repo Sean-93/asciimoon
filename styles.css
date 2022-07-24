@@ -1,7 +1,7 @@
 /* TARGETING THE BODY + HTML WITH OVERFLOW HIDDEN AND POSITION RELATIVE IS THE ONLY WAY TO STOP THE MOON COVER FROM OVERFLOWING */
 
 html {
-  overflow: hidden;
+  overflow-x: hidden;
   position: relative;
 }
 
@@ -10,7 +10,7 @@ body {
   color: white;
   background-color: #000000;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 a {
@@ -350,6 +350,14 @@ a {
 /* 600 MEDIA QUERY */
 
 @media only screen and (max-width: 600px) {
+  html {
+    overflow: hidden;
+  }
+  
+  body {
+    overflow: hidden;
+  }
+
   .title {
     font-size: 7.5vw;
   }
