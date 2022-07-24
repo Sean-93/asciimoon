@@ -1,9 +1,7 @@
-html {
+body {
   font-family: monospace;
   color: white;
   background-color: #000000;
-  max-width: 100%;
-  max-height: 100%;
   overflow: hidden;
 }
 
@@ -28,16 +26,25 @@ a {
 .credits {
   color: rgba(175, 245, 255, .25);
   max-width: 33%;
+  animation: credits-pop-in 4.5s ease-out;
+}
+
+@keyframes credits-pop-in {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 #moon-data {
   font-size: 1vw;
   padding: 1.5vw;
   animation: moon-data-grow 1.5s ease-out;
-}
-
-.next-full-moon {
-  color: aqua !important;
 }
 
 @keyframes moon-data-grow {
@@ -48,6 +55,11 @@ a {
     transform: scale(1);
   }
 }
+
+.next-full-moon {
+  color: aqua !important;
+}
+
 
 .asciimoon {
   margin-top: 2.5vw;
@@ -61,6 +73,7 @@ a {
 
 .moon-cover-container {
   overflow-x: hidden;
+
 }
 
 #moon-cover {
@@ -74,6 +87,7 @@ a {
   top: 2.5vw;
   visibility: hidden;
   animation: moon-cover 1.5s;
+  overflow-x: hidden;
 }
 
 @keyframes moon-cover {
@@ -189,7 +203,7 @@ a {
 /* 1200 MEDIA QUERY */
 
 @media only screen and (max-width: 1200px) {
-  html {
+  body {
     overflow-x: hidden;
     overflow-y: scroll;
   }
