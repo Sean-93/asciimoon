@@ -27,8 +27,6 @@ a {
   color: rgba(175, 245, 255, .25);
   max-width: 33%;
   animation: credits-pop-in 4.5s ease-out;
-  text-align: left;
-  font-size: .75vw;
 }
 
 @keyframes credits-pop-in {
@@ -228,9 +226,7 @@ a {
   }
 
   .credits {
-    max-width: 75%;
-    margin: 2.5vw 12.5vw;
-    font-size: 2.5vw;
+    max-width: 50%;
   }
   
 
@@ -343,8 +339,9 @@ a {
   }
 
   .credits {
+    max-width: 100%;
+    text-align: left;
     margin: 5vw 1vw;
-    font-size: 3vw;
   }
 
   .asciimoon {
