@@ -11,7 +11,7 @@ function isFacebookApp() {
 
 if (isFacebookApp() === true) {
   alert(
-    "Thank you for checking out my site!\n\nUnfortunately, this app doesn't work correctly in Facebook's browser.\n\n*There should be a button with 3 dots in the top-right corner that when clicked, will give you an option to 'Open in Chrome'.\n\n"
+    "Thank you for checking out my site!\n\nUnfortunately, this app doesn't work correctly in Facebook's browser.\n\n*There should be a button with 3 dots in the top-right corner. Click that, and then click 'Open in Chrome' to view the site in a compatible browser.\n\n"
   );
   console.log(
     "This application should not be viewed using Facebook's browser.  Please use any other browser to view this site."

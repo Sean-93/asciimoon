@@ -1,3 +1,7 @@
+html {
+  overflow: hidden;
+}
+
 body {
   font-family: monospace;
   color: white;
@@ -6,7 +10,7 @@ body {
 }
 
 a {
-  color: rgba(175, 245, 255, .25);
+  color: aqua;
 }
 
 .textbox {
@@ -24,7 +28,8 @@ a {
 }
 
 .credits {
-  color: rgba(175, 245, 255, .25);
+  color: aqua;
+  opacity: .33;
   max-width: 33%;
   animation: credits-pop-in 4.5s ease-out;
   text-align: left;
@@ -39,7 +44,7 @@ a {
     opacity: 0;
   }
   100% {
-    opacity: 1;
+    opacity: .33;
   }
 }
 
@@ -75,8 +80,11 @@ a {
 
 .moon-cover-container {
   overflow-x: hidden;
-
 }
+
+/* .moon-cover-class {
+  overflow: hidden;
+} */
 
 #moon-cover {
   position: absolute;
