@@ -219,6 +219,7 @@ a {
 @media only screen and (max-width: 1200px) {
   body {
     overflow-x: hidden;
+    overflow-y: scroll;
   }
 
   .textbox-container {
@@ -349,6 +350,14 @@ a {
 /* 600 MEDIA QUERY */
 
 @media only screen and (max-width: 600px) {
+  html {
+    overflow: hidden;
+  }
+  
+  body {
+    overflow: hidden;
+  }
+
   .title {
     font-size: 7.5vw;
   }
