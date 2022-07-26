@@ -20,8 +20,8 @@ a {
 .textbox {
   float: left;
   position: absolute;
-  top: 10vw;
-  left: 2.5vw;
+  top: 15vw;
+  left: 5vw;
   z-index: 20;
 }
 
@@ -37,7 +37,7 @@ a {
   max-width: 33%;
   animation: credits-pop-in 4.5s ease-out;
   text-align: left;
-  font-size: .85vw;
+  font-size: .75vw;
 }
 
 @keyframes credits-pop-in {
@@ -364,7 +364,7 @@ a {
 
   .credits {
     margin: 5vw 1vw;
-    font-size: 4vw;
+    font-size: 3vw;
   }
 
   .asciimoon {
