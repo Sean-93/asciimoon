@@ -47,10 +47,10 @@ function postMoonData(moon) {
     moonLighting +
     "%" +
     "<div>" +
-    "---Full Moon: " +
+    "Next full moon: " +
     "<span class='next-full-moon'>" +
     moon.nextFullMoon +
-    "---</span>" +
+    "</span>" +
     "</div>" +
     "</div>" +
     "</div>";
