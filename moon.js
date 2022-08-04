@@ -100,7 +100,7 @@ function postMoonData(moon) {
       moonCover.classList.add("waxing-thirty-percent");
       break;
     // 40%
-    case moonLightingRounded > 30 && moonLightingRounded < 40 && "Waxing":
+    case moonLightingRounded > 30 && moonLightingRounded < 50 && "Waxing":
       moonCover.classList.add("waxing-fourty-percent");
       break;
     // 60%
@@ -134,7 +134,7 @@ function postMoonData(moon) {
       moonCover.classList.add("waning-thirty-percent");
       break;
     // 40%
-    case moonLightingRounded > 30 && moonLightingRounded < 40 && "Waning":
+    case moonLightingRounded > 30 && moonLightingRounded < 50 && "Waning":
       moonCover.classList.add("waning-fourty-percent");
       break;
     // 60%
