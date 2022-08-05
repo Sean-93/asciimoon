@@ -72,7 +72,7 @@ function postMoonData(moon) {
   // THIS SWITCH STATEMENT IS FOR THE MAIN 4 MOON PHASES AS WELL AS WAXING & WANING STAGES
   switch (moonPhase) {
     // MAIN PHASES
-    case "First Quarter":
+    case "First quarter":
       console.log(moonPhase);
       moonCover.classList.add("first-quarter");
       break;
