@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <link rel="icon" type="image/x-icon" href="moon-favicon.PNG">
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="description" content="A simple site I made using javascript to track the phases of the moon.  Source code thanks to wdisseny.com/lluna/.  Moon photo from NASA's archive https://images.nasa.gov/details-PIA00405.  Ascii art from the moon photo was generated thanks to https://manytools.org/hacker-tools/convert-images-to-ascii-art/">
@@ -9,7 +10,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#000000">
     <script src="moon.js" type="text/javascript" defer></script>
-    <script src="is-facebook.js" type="text/javascript" defer></script>
+    <script src="is-meta-browser.js" type="text/javascript" defer></script>
+    <script src="visit-counter.js" type="text/javascript" defer></script>
     <link rel="stylesheet" href="styles.css" />
     <title>ASCII ☾ MOON</title>
   </head>
@@ -97,7 +99,7 @@
     </pre>
     <!-- THIS IS A SEMI-OPAQUE BLACK ROUNDED ELEMENT THAT IS OVERLAYED OVER ASCII ART TO DISPLAY MOON PHASE -->
       <div class="moon-cover-container">
-        <div id="moon-cover" class="moon-cover-class"></div>
+        <div  class="moon-cover-class"></div>
       </div>
     <div class="textbox-container">
       <div class="textbox">
