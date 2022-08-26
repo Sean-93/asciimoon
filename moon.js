@@ -88,6 +88,9 @@ function postMoonData(moon) {
 
     // WAXING PHASES
     // 10%
+    case moonLighting < 1 && "Waxing":
+      moonCover.classList.add("waxing-ten-percent");
+      break;
     case moonLightingRounded > 0 && moonLightingRounded < 10 && "Waxing":
       moonCover.classList.add("waxing-ten-percent");
       break;
@@ -122,6 +125,11 @@ function postMoonData(moon) {
 
     // WANING PHASES
     // 10%
+
+    // HAVE TO DO 2 FOR THE ZERO ONE BECAUSE SOME DAYS THAT ARENT 'NEW MOON' HAVE LESS THAN .5% MOONLIGHT
+    case moonLighting < 1 && "Waning":
+      moonCover.classList.add("waning-ten-percent");
+      break;
     case moonLightingRounded > 0 && moonLightingRounded < 10 && "Waning":
       moonCover.classList.add("waning-ten-percent");
       break;
