@@ -1,166 +1,61 @@
-// REQUESTING API FOR MOON PHASES FROM icalendar37.net/lunar/api
+let currentDate = new Date();
 
-function load_moon_phases(obj, callback) {
-  const gets = [];
-  for (let i in obj) {
-    gets.push(i + "=" + encodeURIComponent(obj[i]));
+function getMoonPhase(date) {
+  const moonIllumination = SunCalc.getMoonIllumination(date);
+  let phaseName = "";
+
+  const illumination = moonIllumination.fraction * 100;
+
+  if (illumination < 1) {
+    phaseName = "New Moon";
+  } else if (illumination < 25) {
+    phaseName = "Waxing Crescent";
+  } else if (illumination < 50) {
+    phaseName = "First Quarter";
+  } else if (illumination < 75) {
+    phaseName = "Waxing Gibbous";
+  } else if (illumination >= 99) {
+    phaseName = "Full Moon";
+  } else if (illumination < 100) {
+    phaseName = "Waning Gibbous";
+  } else if (illumination < 125) {
+    phaseName = "Last Quarter";
+  } else {
+    phaseName = "Waning Crescent";
   }
-  gets.push("LDZ=" + new Date(obj.year, obj.month - 1, 1) / 1000);
-  const xmlhttp = new XMLHttpRequest();
-  const url = "https://www.icalendar37.net/lunar/api/?" + gets.join("&");
-  xmlhttp.onreadystatechange = function () {
-    if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-      callback(JSON.parse(xmlhttp.responseText));
-    }
+
+  return {
+    illumination: illumination.toFixed(2),
+    phase: moonIllumination.phase,
+    phaseName: phaseName
   };
-  xmlhttp.open("GET", url, true);
-  xmlhttp.send();
 }
 
-// POSTING THE MOON DATA INTO DOM
+function displayMoonPhase(date) {
+  const moonData = getMoonPhase(date);
+  const moonShadow = document.getElementById('moonShadow');
+  const illumination = parseFloat(100 - moonData.illumination);
+  const translateValue = moonData.phase < 0.5 ? -(100 - illumination) : (100 - illumination);
 
-function postMoonData(moon) {
-  const day = new Date().getDate();
-  const dayWeek = moon.phase[day].dayWeek;
-  const moonPhase = moon.phase[day].phaseName;
-  const moonLighting = moon.phase[day].lighting;
-  const html =
-    "<div>" +
-    "<b>" +
-    moon.nameDay[dayWeek] +
-    "</b>" +
-    "<div>" +
-    day +
-    " <b>" +
-    moon.monthName +
-    "</b> " +
-    moon.year +
-    "</div>" +
-    "<div>" +
-    "Phase limit: " +
-    moon.phase[day].isPhaseLimit +
-    "</div>" +
-    "<div>" +
-    "&#x22C4; &#x22C4; &#x22C4; " +
-    moonPhase +
-    " " +
-    moonLighting +
-    "%" +
-    "<div>" +
-    "---Full Moon: " +
-    "<span class='next-full-moon'>" +
-    moon.nextFullMoon +
-    "---</span>" +
-    "</div>" +
-    "</div>" +
-    "</div>";
-  document.getElementById("moon-data").innerHTML = html;
+  moonShadow.style.transform = `translateX(${translateValue}%)`;
 
-  // LOGGING DATA TO CONSOLE JUST CAUSE
-  console.log(moon);
-  console.log("Moon lighting: " + moonLighting + "%");
-  console.log("Phase limit: " + moon.phase[day].isPhaseLimit);
-
-  // STORING MOON COVER ELEMENT IN VARIABLE
-  const moonCover = document.getElementById("moon-cover");
-
-  // SWITCH STATEMENTS BELOW TO DETERMINE WHICH MOON PHASE TO DISPLAY BY COVERING SOME OF THE ASCII MOON WITH A ROUNDED SEMI-OPAQUE BLACK ELEMENT
-
-  // THIS SWITCH STATEMENT IS FOR THE MAIN 4 MOON PHASES AS WELL AS WAXING & WANING STAGES
-  switch (moonPhase) {
-    // MAIN PHASES
-    case "First quarter":
-      console.log(moonPhase);
-      moonCover.classList.add("first-quarter");
-      break;
-    case "Last quarter":
-      console.log(moonPhase);
-      moonCover.classList.add("last-quarter");
-      break;
-    case "New Moon":
-      console.log(moonPhase);
-      moonCover.classList.add("new-moon");
-      break;
-    // THERE IS NO CASE FOR FULL MOON
-
-    // WAXING PHASES
-    // 10%
-    case moonLighting > 0 && moonLighting < 10 && "Waxing":
-      moonCover.classList.add("waxing-ten-percent");
-      break;
-    // 20%
-    case moonLighting > 10 && moonLighting < 20 && "Waxing":
-      moonCover.classList.add("waxing-twenty-percent");
-      break;
-    // 30%
-    case moonLighting > 20 && moonLighting < 30 && "Waxing":
-      moonCover.classList.add("waxing-thirty-percent");
-      break;
-    // 40%
-    case moonLighting > 30 && moonLighting < 50 && "Waxing":
-      moonCover.classList.add("waxing-fourty-percent");
-      break;
-    // 60%
-    case moonLighting > 50 && moonLighting < 60 && "Waxing":
-      moonCover.classList.add("waxing-sixty-percent");
-      break;
-    // 70%
-    case moonLighting > 60 && moonLighting < 70 && "Waxing":
-      moonCover.classList.add("waxing-seventy-percent");
-      break;
-    // 80%
-    case moonLighting > 70 && moonLighting < 80 && "Waxing":
-      moonCover.classList.add("waxing-eighty-percent");
-      break;
-    // 90%
-    case moonLighting > 80 && moonLighting < 99 && "Waxing":
-      moonCover.classList.add("waxing-ninety-percent");
-      break;
-
-    // WANING PHASES
-    // 10%
-
-    // HAVE TO DO 2 FOR THE ZERO ONE BECAUSE SOME DAYS THAT ARENT 'NEW MOON' HAVE LESS THAN .5% MOONLIGHT
-    case moonLighting > 0 && moonLighting < 10 && "Waning":
-      moonCover.classList.add("waning-ten-percent");
-      break;
-    // 20%
-    case moonLighting > 10 && moonLighting < 20 && "Waning":
-      moonCover.classList.add("waning-twenty-percent");
-      break;
-    // 30%
-    case moonLighting > 20 && moonLighting < 30 && "Waning":
-      moonCover.classList.add("waning-thirty-percent");
-      break;
-    // 40%
-    case moonLighting > 30 && moonLighting < 50 && "Waning":
-      moonCover.classList.add("waning-fourty-percent");
-      break;
-    // 60%
-    case moonLighting > 50 && moonLighting < 60 && "Waning":
-      moonCover.classList.add("waning-sixty-percent");
-      break;
-    // 70%
-    case moonLighting > 60 && moonLighting < 70 && "Waning":
-      moonCover.classList.add("waning-seventy-percent");
-      break;
-    // 80%
-    case moonLighting > 70 && moonLighting < 80 && "Waning":
-      moonCover.classList.add("waning-eighty-percent");
-      break;
-    // 90%
-    case moonLighting > 80 && moonLighting < 99 && "Waning":
-      moonCover.classList.add("waning-ninety-percent");
-      break;
-  }
-
-  // THIS SWITCH STATEMENT IS FOR WAXING & WANING PHASES
+  const list = document.getElementById('moonPhaseData');
+  list.innerHTML = `
+<div><strong>Date:</strong> ${date.toISOString().split('T')[0]}</div>
+<div><strong>Moon Illumination:</strong> ${moonData.illumination}%</div>
+<div><strong>Phase:</strong> ${moonData.phaseName}</div>
+`;
 }
 
-const configMoon = {
-  lang: "en",
-  month: new Date().getMonth() + 1,
-  year: new Date().getFullYear(),
-};
 
-load_moon_phases(configMoon, postMoonData);
+function changeDate(days) {
+  currentDate.setDate(currentDate.getDate() + days);
+  displayMoonPhase(currentDate);
+}
+
+function resetToToday() {
+  currentDate = new Date();
+  displayMoonPhase(currentDate);
+}
+
+window.onload = () => displayMoonPhase(currentDate);

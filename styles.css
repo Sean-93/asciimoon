@@ -1,368 +1,116 @@
-/* TARGETING THE BODY + HTML WITH OVERFLOW HIDDEN AND POSITION RELATIVE IS THE ONLY WAY TO STOP THE MOON COVER FROM OVERFLOWING */
-
-html {
-  overflow-x: hidden;
-  position: relative;
-}
-
 body {
-  font-family: monospace;
-  color: white;
-  background-color: #000000;
-  position: relative;
-  overflow-x: hidden;
-}
-
-a {
   color: aqua;
-}
-
-.textbox {
-  float: left;
-  position: absolute;
-  top: 10vw;
-  left: 2.5vw;
-  z-index: 20;
-}
-
-.title {
-  font-weight: 700;
-  font-size: 2vw;
-  color: aqua;
-}
-
-.credits {
-  color: aqua;
-  opacity: .33;
-  max-width: 33%;
-  animation: credits-pop-in 4.5s ease-out;
-  text-align: left;
-  font-size: .85vw;
-}
-
-@keyframes credits-pop-in {
-  0% {
-    opacity: 0;
-  }
-  50% {
-    opacity: 0;
-  }
-  100% {
-    opacity: .33;
-  }
-}
-
-#moon-data {
-  font-size: 1vw;
-  padding: 1.5vw;
-  animation: moon-data-grow 1.5s ease-out;
-}
-
-@keyframes moon-data-grow {
-  0% {
-    transform: scale(0);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-.next-full-moon {
-  color: aqua !important;
-}
-
-
-.asciimoon {
-  margin-top: 2.5vw;
   text-align: center;
-  font-size: 0.5vw;
-  transform: scaleX(0.85);
+  font-family: 'Courier New', Courier, monospace;
+  background-color: black;
+  opacity: 1;
+  background-image: radial-gradient(aqua 1px, transparent 1px), radial-gradient(aqua 1px, black 1px);
+  background-size: 10rem 10rem;
+  background-position: 0 0, 5rem 5rem;
+  padding: 1rem;
+}
+
+#moonContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: relative;
-  color: aqua;
-  border-radius: 1vw;
-}
-
-.moon-cover-container {
-  overflow-x: hidden;
-}
-
-/* .moon-cover-class {
-  overflow: hidden;
-} */
-
-#moon-cover {
-  position: absolute;
-  background-color: rgba(0, 0, 0, 0.75);
-  height: 75vw;
-  padding: 5vw;
-  width: 50vw;
+  margin: 2.5rem auto;
   border-radius: 50%;
-  z-index: 10;
-  top: 2.5vw;
-  visibility: hidden;
-  animation: moon-cover 1.5s;
-  overflow-x: hidden;
+  overflow: hidden;
+  width: fit-content;
+  height: fit-content;
+  box-shadow: 0 0 10rem rgba(0, 255, 255, .25);
+  aspect-ratio: 1/1;
 }
 
-@keyframes moon-cover {
-  from {
-    width: 0vw;
-  }
-  to {
-    width: 50vw;
-  }
+#moonShadow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, .75);
+  box-shadow: 0 0 2.5rem rgba(0, 0, 0, 1);
+  border-radius: 50%;
+  transform: translateX(0%);
+  transition: transform 0.3s ease-out;
 }
 
-/* WAXING STAGES */
-
-.waxing-ten-percent {
-  left: 15vw;
-  visibility: visible !important;
+pre {
+  text-align: center;
+  font-size: .5vh;
+  /* Adjust font size as needed */
+  line-height: 1.425;
+  /* Adjust line height as needed */
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  background-color: black;
 }
 
-.waxing-twenty-percent {
-  left: 10vw;
-  visibility: visible !important;
+h1 {
+  padding-top: .5rem;
+  border-top: solid rgba(0, 255, 255, .75);
+  border-left: solid rgba(0, 255, 255, .75);
+  background-color: black;
+  max-width: 20rem;
+  margin: 0 auto;
+  font-weight: 900;
+  letter-spacing: -.1rem;
 }
 
-.waxing-thirty-percent {
-  left: 5vw;
-  visibility: visible !important;
+#moonPhaseData {
+  text-align: left;
+  max-width: 20rem;
+  margin: 0 auto;
+  background-color: black;
+  border: 2px white solid;
+  padding: 1rem;
 }
 
-.waxing-fourty-percent {
-  left: -0vw;
-  visibility: visible !important;
+strong {
+  color: white;
 }
 
-.waxing-sixty-percent {
-  left: -10vw;
-  visibility: visible !important;
+button {
+  background-color: black;
+  color: aqua;
+  padding: .5rem;
+  border-radius: 5%;
+  border-top: solid rgba(0, 255, 255, .75);
+  border-left: solid rgba(0, 255, 255, .75);
 }
 
-.waxing-seventy-percent {
-  left: -15vw;
-  visibility: visible !important;
+button:hover {
+  text-decoration: underline;
+  text-underline-offset: .5rem;
+  cursor: pointer;
 }
 
-.waxing-eighty-percent {
-  left: -20vw;
-  visibility: visible !important;
-}
-
-.waxing-ninety-percent {
-  left: -25vw;
-  visibility: visible !important;
-}
-
-/* WANING STAGES */
-
-.waning-ten-percent {
-  right: 15vw;
-  visibility: visible !important;
-}
-
-.waning-twenty-percent {
-  right: 10vw;
-  visibility: visible !important;
-}
-
-.waning-thirty-percent {
-  right: 5vw;
-  visibility: visible !important;
-}
-
-.waning-fourty-percent {
-  right: -0vw;
-  visibility: visible !important;
-}
-
-.waning-sixty-percent {
-  right: -10vw;
-  visibility: visible !important;
-}
-
-.waning-seventy-percent {
-  right: -15vw;
-  visibility: visible !important;
-}
-
-.waning-eighty-percent {
-  right: -20vw;
-  visibility: visible !important;
-}
-
-.waning-ninety-percent {
-  right: -25vw;
-  visibility: visible !important;
-}
-
-/* MAIN PHASES OF MOON (FULL EXCLUDED AS FULL IS DEFAULT) */
-
-.first-quarter {
-  left: -5vw;
-  visibility: visible !important;
-}
-
-.last-quarter {
-  right: -5vw;
-  visibility: visible !important;
-}
-
-.new-moon {
-  right: 20vw;
-  visibility: visible !important;
-}
-
-/* 1200 MEDIA QUERY */
-
-@media only screen and (max-width: 1200px) {
-  body {
-    overflow-x: hidden;
-  }
-
-  .textbox-container {
-    position: relative;
-    z-index: 20;
-  }
-
-  .textbox {
-    float: none;
-    position: static;
-    top: 0vw;
-    left: 0vw;
-    text-align: center;
-  }
-
-  .title {
-    font-size: 5vw;
-  }
-
-  .credits {
-    max-width: 75%;
-    margin: 2.5vw 12.5vw;
-    font-size: 2.5vw;
-  }
-  
-
-  #moon-cover {
-    height: 75vw;
-    width: 75vw;
-  }
-
-  @keyframes moon-cover {
-    from {
-      width: 0vw;
-    }
-    to {
-      width: 75vw;
-    }
-  }
-
-  #moon-data {
-    font-size: 3vw;
-  }
-
-  /* WAXING STAGES */
-
-  .waxing-ten-percent {
-    left: 0vw;
-  }
-
-  .waxing-twenty-percent {
-    left: -5vw;
-  }
-
-  .waxing-thirty-percent {
-    left: -10vw;
-  }
-
-  .waxing-fourty-percent {
-    left: -20vw;
-  }
-
-  .waxing-sixty-percent {
-    left: -40vw;
-  }
-
-  .waxing-seventy-percent {
-    left: -50vw;
-  }
-
-  .waxing-eighty-percent {
-    left: -55vw;
-  }
-
-  .waxing-ninety-percent {
-    left: -60vw;
-  }
-
-  /* WANING STAGES */
-
-  .waning-ten-percent {
-    right: 0vw;
-  }
-
-  .waning-twenty-percent {
-    right: -5vw;
-  }
-
-  .waning-thirty-percent {
-    right: -15vw;
-  }
-
-  .waning-fourty-percent {
-    right: -25vw;
-  }
-
-  .waning-sixty-percent {
-    right: -35vw;
-  }
-
-  .waning-seventy-percent {
-    right: -45vw;
-  }
-
-  .waning-eighty-percent {
-    right: -50vw;
-  }
-
-  .waning-ninety-percent {
-    right: -60vw;
-  }
-
-  /* MAIN PHASES OF MOON (FULL EXCLUDED AS FULL IS DEFAULT) */
-
-  .first-quarter {
-    left: -30vw;
-  }
-
-  .last-quarter {
-    right: -30vw;
-  }
-
-  .new-moon {
-    right: 5vw;
-  }
-}
-
-/* 600 MEDIA QUERY */
 
 @media only screen and (max-width: 600px) {
-  .title {
-    font-size: 7.5vw;
+  body {
+    background-size: 7rem 7rem;
+    background-position: 0 0, 3.5rem 3.5rem;
   }
 
-  .credits {
-    margin: 5vw 1vw;
-    font-size: 4vw;
+  pre {
+    font-size: .35vh;
   }
 
-  .asciimoon {
-    font-size: 0.75vw;
+}
+
+@media only screen and (max-width: 350px) {
+  body {
+    background-size: 5rem 5rem;
+    background-position: 0 0, 2.5rem 2.5rem;
   }
 
-  #moon-data {
-    font-size: 5vw;
+  pre {
+    font-size: .3vh;
   }
+
 }
