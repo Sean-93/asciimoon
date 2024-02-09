@@ -102,6 +102,7 @@ button:hover {
 
   pre {
     font-size: .35vh;
+    line-height: 1.55;
   }
 
 }
