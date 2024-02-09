@@ -42,7 +42,7 @@ function displayMoonPhase(date) {
   const list = document.getElementById('moonPhaseData');
   list.innerHTML = `
 <div><strong>Date:</strong> ${date.toISOString().split('T')[0]}</div>
-<div><strong>Moon Illumination:</strong> ${moonData.illumination}%</div>
+<div><strong>Moonlight:</strong> ${moonData.illumination}%</div>
 <div><strong>Phase:</strong> ${moonData.phaseName}</div>
 `;
 }

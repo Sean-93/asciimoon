@@ -90,6 +90,9 @@ button:hover {
   cursor: pointer;
 }
 
+.button-group-tiny-screen {
+  display: none;
+}
 
 @media only screen and (max-width: 600px) {
   body {
@@ -111,6 +114,19 @@ button:hover {
 
   pre {
     font-size: .3vh;
+  }
+
+  #moonPhaseData {
+    padding: .5rem;
+  }
+
+  .button-group-tiny-screen {
+    display: block;
+  }
+
+
+  .button-group {
+    display: none;
   }
 
 }

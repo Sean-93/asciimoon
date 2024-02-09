@@ -108,10 +108,17 @@
     <!-- Moon phase data will be listed here -->
   </ul>
   <br />
+  <!-- THIS IS THE MAIN BUTTON GROUP -->
   <div class="button-group">
     <button onclick="changeDate(-1)">&lt; Previous Day</button>
     <button onclick="resetToToday()">Today</button>
     <button onclick="changeDate(1)">Next Day &gt;</button>
+  </div>
+  <!-- THIS IS FOR EXTRA SMALL SCREENS SMALLER THAN 350PX  -->
+  <div class="button-group-tiny-screen">
+    <button onclick="changeDate(-1)">&lt; Day</button>
+    <button onclick="resetToToday()">Today</button>
+    <button onclick="changeDate(1)">Day &gt;</button>
   </div>
   <section>
   </section>
