@@ -1,3 +1,5 @@
+// FOR SOME REASON, ASCII ART GETS MESSED UP WHEN VIEWING A SITE THROUGH A META/FB/INSTA BROWSER WHEN USING AN ANDROID- IT MAKES THE ASCII ART WAAAAY TOO BIG, SO THIS IS HERE TO CORRECT THAT
+
 const metaBrowserFix = () => {
     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
