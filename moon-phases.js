@@ -2,27 +2,31 @@ let currentDate = new Date();
 
 function getMoonPhase(date) {
   const moonIllumination = SunCalc.getMoonIllumination(date);
-  let phaseName = "";
-
   const illumination = moonIllumination.fraction * 100;
-
-  if (illumination < 1) {
-    phaseName = "New Moon";
-  } else if (illumination < 25) {
-    phaseName = "Waxing Crescent";
-  } else if (illumination < 50) {
-    phaseName = "First Quarter";
-  } else if (illumination < 75) {
-    phaseName = "Waxing Gibbous";
-  } else if (illumination >= 99) {
-    phaseName = "Full Moon";
-  } else if (illumination < 100) {
-    phaseName = "Waning Gibbous";
-  } else if (illumination < 125) {
-    phaseName = "Last Quarter";
-  } else {
-    phaseName = "Waning Crescent";
+  
+  function getMoonPhaseName(phase) {
+    if (phase >= 0 && phase < 0.03) {
+      return "New Moon";
+    } else if (phase >= 0.03 && phase < 0.22) {
+      return "Waxing Crescent";
+    } else if (phase >= 0.22 && phase < 0.28) {
+      return "First Quarter";
+    } else if (phase >= 0.28 && phase < 0.48) {
+      return "Waxing Gibbous";
+    } else if (phase >= 0.48 && phase < 0.52) {
+      return "Full Moon";
+    } else if (phase >= 0.52 && phase < 0.72) {
+      return "Waning Gibbous";
+    } else if (phase >= 0.72 && phase < 0.78) {
+      return "Last Quarter";
+    } else if (phase >= 0.78 && phase < 0.97) {
+      return "Waning Crescent";
+    } else {
+      return "New Moon";
+    }
   }
+
+  const phaseName = getMoonPhaseName(moonIllumination.phase);
 
   return {
     illumination: illumination.toFixed(2),
@@ -41,12 +45,11 @@ function displayMoonPhase(date) {
 
   const list = document.getElementById('moonPhaseData');
   list.innerHTML = `
-<div><strong>Date:</strong> ${date.toISOString().split('T')[0]}</div>
-<div><strong>Moonlight:</strong> ${moonData.illumination}%</div>
-<div><strong>Phase:</strong> ${moonData.phaseName}</div>
-`;
+    <div><strong>Date:</strong> ${date.toISOString().split('T')[0]}</div>
+    <div><strong>Moonlight:</strong> ${moonData.illumination}%</div>
+    <div><strong>Phase:</strong> ${moonData.phaseName}</div>
+  `;
 }
-
 
 function changeDate(days) {
   currentDate.setDate(currentDate.getDate() + days);
