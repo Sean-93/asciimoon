@@ -1,0 +1,40 @@
+---
+---
+
+<footer>
+  <br />
+  <div><a href="/">Home &gt;</a></div>
+  <br />
+  <div><a href="/about">About &gt;</a></div>
+  <br />
+  <div><a href="/privacy-policy">Privacy Policy &gt;</a></div>
+  <p>© <span id="current-year"></span>&nbsp;<span>ASCIIMoon</span></p>
+</footer>
+<style>
+  footer {
+    display: flex;
+    margin: auto;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 928px;
+    background-color: var(--transparent-black-75);
+  }
+
+  br {
+    display: none;
+  }
+
+  @media only screen and (max-width: 600px) {
+    footer {
+      display: block;
+      max-width: 480px;
+    }
+    br {
+      display: block;
+    }
+  }
+</style>
+<script is:inline>
+  // THIS IS FOR THE COPYRIGHT STATEMENT
+  document.getElementById("current-year").innerHTML = new Date().getFullYear();
+</script>

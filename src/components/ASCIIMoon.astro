@@ -1,45 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
+---
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- THEME COLOR -->
-  <meta name="theme-color" content="aqua">
-  <!-- GENERIC META INFO -->
-  <meta name="description"
-    content="ASCII ☾ Moon- view & cycle through The Moon's real-time phases on a moon rendered in ASCII art.">
-  <meta name="keywords"
-    content="moon phase, ascii art, ascii moon, moon app, moon phases, moonlight, moon tracker, moon tracker app, moon phase app">
-  <meta name="developer" content="Sean Rooney">
-  <link rel="canonical" href="https://asciimoon.com/">
-  <!-- ROBOTS -->
-  <meta name="robots" content="index, follow" />
-  <!-- OPENGRAPH TAGS (SOCIAL MEDIA) -->
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="ASCII ☾ Moon" />
-  <meta property="og:description"
-    content="ASCII ☾ Moon- view & cycle through The Moon's real-time phases on a moon rendered in ASCII art." />
-  <meta property="og:url" content="https://asciimoon.com/" />
-  <!-- TWITTER/X CARD DATA -->
-  <meta name="twitter:title" content="ASCII ☾ Moon" />
-  <meta name="twitter:description"
-    content="ASCII ☾ Moon- view & cycle through The Moon's real-time phases on a moon rendered in ASCII art." />
-  <!-- FAVICON -->
-  <link rel="icon" type="image/PNG" href="moon-favicon.PNG">
-  <title>ASCII ☾ Moon</title>
-  <script src="https://cdn.jsdelivr.net/npm/suncalc@1.8.0/suncalc.js"></script>
-  <script src="meta-browser-fix.js" type="text/javascript" defer></script>
-  <script src="moon-phases.js" type="text/javascript" defer></script>
-  <link rel="stylesheet" href="styles.css" />
-</head>
+---
 
-<body>
+<div class="moon-flex-container">
+  <div class="left-column">
+    <div>
+
+      <h1>View The Moon's Daily Phases</h1>
+      <p>
+        View & cycle through The Moon's phases day to day - rendered in ASCII
+        art.
+      </p>
+    </div>
+    <br/>
+    <!-- Moon phase data will be listed here -->
+<div id="moonPhaseData">
+  <div><strong>Date:</strong> <span class="date"></span></div>
+  <div><strong>Moonlight:</strong> <span class="illumination"></span></div>
+  <div><strong>Phase:</strong> <span class="phase"></span></div>
+</div>
+<br/>
+    <section>
+      <!-- THIS IS THE MAIN BUTTON GROUP -->
+      <div class="button-group">
+        <button onclick="changeDate(-1)">&lt; Previous Day</button>
+        <button onclick="resetToToday()">Today</button>
+        <button onclick="changeDate(1)">Next Day &gt;</button>
+      </div>
+    </section>
+    <br />
+    <!-- <Nav /> -->
+  </div>
+
   <div id="moonContainer">
     <div id="moonShadow"></div>
     <!-- THIS IS ASCII ART OF A PHOTO OF THE MOON TAKEN BY THE GALILEO SPACECRAFT IN 1992 -->
-    <pre>
-                                                                                    #@&&%#%&(#&###&%###&&&&#/(@&(###.  %/#,                                                                             
+    <pre>                                                                                    #@&&%#%&(#&###&%###&&&&#/(@&(###.  %/#,                                                                             
                                                                             #&%%#&@%(&%##(*%&%##(###&&%&%#(#%&%%%&%###%(%#(#((@&&&(/.                                                                   
                                                                    .%&&##%###/%%#%%#&,%%&%%%%#%%%%%%&&&&%%%%##%&(#(%&(###%/##&##%(*(&%@#%*%/                                                            
                                                              /#/%&%#%(@%##%(((#&&&%%%%&%%%%&%&&&&&&&%%%%%%%%%%%#####%#%&#%#%%%%%%%%&&&&%%.%%%%%*(                                                       
@@ -119,26 +115,188 @@
                                                                               */(%%%%%%%%%##%##########(/(((/(((((////////.                                                                             
     </pre>
   </div>
-  <h1>☾ ASCIIMoon</h1>
-  <br />
-  <section id="moonPhaseData">
-    <!-- Moon phase data will be listed here -->
-  </section>
-  <br />
-  <!-- THIS IS THE MAIN BUTTON GROUP -->
-  <div class="button-group">
-    <button onclick="changeDate(-1)">&lt; Previous Day</button>
-    <button onclick="resetToToday()">Today</button>
-    <button onclick="changeDate(1)">Next Day &gt;</button>
-  </div>
-  <!-- THIS IS FOR EXTRA SMALL SCREENS SMALLER THAN 350PX  -->
-  <div class="button-group-tiny-screen">
-    <button onclick="changeDate(-1)">&lt; Day</button>
-    <button onclick="resetToToday()">Today</button>
-    <button onclick="changeDate(1)">Day &gt;</button>
-  </div>
-  <section>
-  </section>
-</body>
+</div>
+<style>
+  .moon-flex-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    justify-content: safe center;
+    max-width: 1024px;
+    margin: auto auto;
+    height: 85vh;
+  }
 
-</html>
+  .left-column {
+    max-width: 400px;
+    margin-right: 24px;
+  }
+
+  #moonContainer {
+    display: flex;
+    justify-content: center;
+    justify-content: safe center;
+    align-items: center;
+    position: relative;
+    border-radius: 50%;
+    overflow: hidden;
+    width: fit-content;
+    height: fit-content;
+    box-shadow: 0 0 100rem var(--transparent-aqua-25);
+    aspect-ratio: 1/1;
+    
+  }
+
+  #moonPhaseData {
+    font-size: 1.25rem;
+    max-width: 320px;
+    text-align: left;
+    border-radius: 0.25rem;
+    background-color: var(--transparent-black-75);
+  }
+
+  #moonShadow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--transparent-black-75);
+    box-shadow: 0 0 2.5rem var(--transparent-black-100);
+    border-radius: 50%;
+    transform: translateX(0%);
+    transition: transform 0.3s ease-out;
+  }
+
+  pre {
+    text-align: center;
+    font-size: 0.5vh;
+    line-height: 1.425;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    background-color: var(--black);
+       margin-left: -1.5rem;
+  }
+
+  @media only screen and (max-width: 768px) {
+    .moon-flex-container {
+      height: auto;
+      margin-top: 24px;
+    }
+
+    #moonPhaseData {
+      font-size: 1rem;
+    }
+
+    .left-column {
+      max-width: auto;
+      margin: 0 auto;
+    }
+      .button-group {
+    display: grid;
+    grid-template-columns: auto auto auto;
+  }
+  }
+
+  @media only screen and (max-width: 600px) {
+    .moon-flex-container {
+      flex-direction: column-reverse;
+    }
+
+    #moonContainer {
+      margin-bottom: 24px;
+    }
+
+    #moonPhaseData {
+      /* text-align: center; */
+    }
+
+    pre {
+      font-size: 0.35vh;
+      line-height: 1.55;
+    }
+  }
+
+  @media only screen and (max-width: 350px) {
+    pre {
+      font-size: 0.3vh;
+    }
+
+    #moonPhaseData {
+      padding: 0.5rem;
+    }
+  }
+</style>
+<script is:inline>
+  // MOON PHASES
+
+  // THIS CODE USES SUNCALC TO TRACK THE MOON'S PHASES
+
+  let currentDate = new Date();
+
+  function getMoonPhase(date) {
+    const moonIllumination = SunCalc.getMoonIllumination(date);
+    const illumination = moonIllumination.fraction * 100;
+
+    function getMoonPhaseName(phase) {
+      if (phase >= 0 && phase < 0.03) {
+        return "New Moon";
+      } else if (phase >= 0.03 && phase < 0.22) {
+        return "Waxing Crescent";
+      } else if (phase >= 0.22 && phase < 0.28) {
+        return "First Quarter";
+      } else if (phase >= 0.28 && phase < 0.48) {
+        return "Waxing Gibbous";
+      } else if (phase >= 0.48 && phase < 0.52) {
+        return "Full Moon";
+      } else if (phase >= 0.52 && phase < 0.72) {
+        return "Waning Gibbous";
+      } else if (phase >= 0.72 && phase < 0.78) {
+        return "Last Quarter";
+      } else if (phase >= 0.78 && phase < 0.97) {
+        return "Waning Crescent";
+      } else {
+        return "New Moon";
+      }
+    }
+
+    const phaseName = getMoonPhaseName(moonIllumination.phase);
+
+    return {
+      illumination: illumination.toFixed(2),
+      phase: moonIllumination.phase,
+      phaseName: phaseName,
+    };
+  }
+
+  function displayMoonPhase(date) {
+    const moonData = getMoonPhase(date);
+    const moonShadow = document.getElementById("moonShadow");
+    const illumination = parseFloat(100 - moonData.illumination);
+    const translateValue =
+      moonData.phase < 0.5 ? -(100 - illumination) : 100 - illumination;
+
+    moonShadow.style.transform = `translateX(${translateValue}%)`;
+
+    const list = document.getElementById("moonPhaseData");
+list.querySelector(".date").textContent = date.toISOString().split("T")[0];
+list.querySelector(".illumination").textContent = `${moonData.illumination}%`;
+list.querySelector(".phase").textContent = moonData.phaseName;
+
+  }
+
+  function changeDate(days) {
+    currentDate.setDate(currentDate.getDate() + days);
+    displayMoonPhase(currentDate);
+  }
+
+  function resetToToday() {
+    currentDate = new Date();
+    displayMoonPhase(currentDate);
+  }
+
+  window.onload = () => displayMoonPhase(currentDate);
+</script>

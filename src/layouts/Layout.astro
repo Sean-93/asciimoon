@@ -1,0 +1,256 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  keywords: string;
+  canonicalURL: string;
+  robots: string;
+}
+
+const { title, description, keywords, canonicalURL, robots } = Astro.props;
+
+// COMPONENTS
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="refresh" content="180" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- FAVICON -->
+    <link rel="icon" type="image/svg" href="/moon-favicon.png" />
+    <!-- THEME COLOR -->
+    <meta name="theme-color" content="aqua" />
+    <!-- GENERIC METADATA -->
+    <meta name="author" content="Sean Rooney" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
+    <!-- CANONICAL URL -->
+    <link rel="canonical" href={canonicalURL} />
+    <!-- ROBOTS -->
+    <meta name="robots" content={robots} />
+    <!-- OPENGRAPH TAGS (SOCIAL MEDIA) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <!-- TWITTER/X CARD DATA -->
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <!-- SUNCALC CDN FOR THE MOON TRACKING FUNTIONALITY -->
+    <script src="https://cdn.jsdelivr.net/npm/suncalc@1.8.0/suncalc.js"
+    ></script>
+    <!-- TITLE -->
+    <title>{title}</title>
+  </head>
+  <body>
+    <!-- SITE NAVBAR -->
+    <Nav />
+    <slot />
+    <!-- SITE FOOTER -->
+    <Footer />
+    <style is:global>
+      /* RANDOM UI COLORS ON LOAD */
+      h1,
+      h2,
+      div,
+      p {
+        scale: 100%;
+        animation: scale_up_everything 1s ease-in alternate;
+        /* Use a CSS variable for color */
+        color: var(--start-color, aqua);
+      }
+
+      @keyframes scale_up_everything {
+        0% {
+          scale: 99%;
+          opacity: 75%;
+          color: var(--start-color, aqua);
+        }
+        50% {
+          opacity: 100%;
+        }
+        100% {
+          scale: 100%;
+        }
+      }
+
+      :root {
+        /* COLORS */
+        --aqua: aqua;
+        --black: black;
+        --white: white;
+        --transparent-black-75: rgba(0, 0, 0, 0.75);
+        --transparent-black-100: rgba(0, 0, 0, 1);
+        --transparent-aqua-25: rgba(0, 255, 255, 0.25);
+        --transparent-aqua-75: rgba(0, 255, 255, 0.75);
+      }
+
+      body {
+        color: var(--aqua);
+        font-family: Consolas, monospace, "Lucida Console", "Courier New",
+          Monaco;
+        background-color: var(--black);
+        opacity: 1;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        font-weight: 600;
+        text-wrap: balance;
+
+        /* STAR COUNT */
+        --star-count: 50;
+      }
+
+      h1 {
+        background-color: var(--black);
+        font-weight: 700;
+
+        font-size: 1.5rem;
+      }
+
+      h2 {
+        font-size: 1.25rem;
+      }
+
+      a {
+        text-decoration: none;
+        font-size: 1rem;
+        background-color: var(--transparent-black-75);
+      }
+
+      a:hover {
+        text-decoration: underline;
+        text-underline-offset: 0.25rem;
+        color: var(--aqua);
+      }
+
+      a:visited {
+        color: var(--aqua);
+      }
+
+      p {
+        background-color: var(--transparent-black-75);
+        color: var(--white);
+        font-weight: 700;
+      }
+
+      strong {
+        color: var(--white);
+      }
+
+      button {
+        background-color: var(--black);
+        color: var(--aqua);
+        padding: 0.5rem;
+        border-radius: 5%;
+        border-top: solid var(--transparent-aqua-75);
+        border-left: solid var(--transparent-aqua-75);
+      }
+
+      button:hover {
+        text-decoration: underline;
+        text-underline-offset: 0.5rem;
+        cursor: pointer;
+      }
+
+      @media only screen and (max-width: 600px) {
+        body {
+          font-size: 0.85rem;
+          max-width: 320px;
+          margin: auto;
+          /* text-align: center; */
+        }
+
+        .main-container {
+          display: block;
+        }
+
+        h1 {
+          font-size: 1.25rem;
+        }
+      }
+    </style>
+    <script is:inline>
+      // META BROWSER FIX
+
+      // FOR SOME REASON, ASCII ART GETS MESSED UP WHEN VIEWING A SITE THROUGH A META/FB/INSTA BROWSER WHEN USING AN ANDROID- IT MAKES THE ASCII ART WAAAAY TOO BIG, SO THIS IS HERE TO CORRECT THAT
+
+      const metaBrowserFix = () => {
+        const userAgent =
+          navigator.userAgent || navigator.vendor || window.opera;
+
+        // Consolidated condition
+        if (
+          /android/i.test(userAgent) &&
+          (userAgent.includes("FBAN") ||
+            userAgent.includes("FBAV") ||
+            userAgent.includes("Instagram"))
+        ) {
+          const moonContainer = document.getElementById("moonContainer");
+
+          moonContainer.style.transform = "scale(0.333)";
+          moonContainer.style.margin = "-95%";
+          moonContainer.style.marginBottom = "-85%";
+        }
+      };
+
+      // Running the detection function
+      metaBrowserFix();
+
+      // RANDOMIZING STARS
+      const root = document.documentElement;
+      const starCount = 50;
+      const starColors = ["#a0ffff", "#99ccff", "#ccffff", "#b3e0ff"]; // slight aqua variations for depth
+
+      // Generate CSS variables for stars: position and size
+      for (let i = 1; i <= starCount; i++) {
+        const size = (Math.random() * 0.15 + 0.05).toFixed(3) + "rem"; // 0.05rem to 0.2rem
+        const x = Math.floor(Math.random() * 100) + "%";
+        const y = Math.floor(Math.random() * 100) + "%";
+        root.style.setProperty(`--star${i}-size`, size);
+        root.style.setProperty(`--star${i}-x`, x);
+        root.style.setProperty(`--star${i}-y`, y);
+      }
+
+      // Build the background-image CSS string dynamically
+      let bgImages = [];
+      for (let i = 1; i <= starCount; i++) {
+        // Randomly pick a star color from the array for subtle variation
+        const color = starColors[Math.floor(Math.random() * starColors.length)];
+
+        bgImages.push(
+          `radial-gradient(circle var(--star${i}-size) at var(--star${i}-x) var(--star${i}-y), ${color} 90%, transparent 100%)`
+        );
+      }
+
+      // Apply background-image style to body
+      document.body.style.backgroundImage = bgImages.join(", ");
+
+      // PART OF LOADING ANIMATION WHERE A RANDOM CHOICE FROM A SET OF COLORS FLASHES
+      const colors = [
+        "aqua",
+        "cyan",
+        "deepskyblue",
+        "skyblue",
+        "lightskyblue",
+        "turquoise",
+        "aquamarine",
+      ];
+
+      const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+      document.querySelectorAll("h1, div, p, pre").forEach((el) => {
+        el.style.setProperty("--start-color", randomColor);
+      });
+
+      const moon = document.querySelector("#moonContainer");
+      if (moon) {
+        moon.style.boxShadow = `0 0 4rem ${randomColor}`;
+      }
+    </script>
+  </body>
+</html>
