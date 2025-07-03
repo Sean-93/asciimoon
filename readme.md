@@ -1,4 +1,4 @@
-![ASCII Moon Icon](/moon-favicon.png)ASCIIMoon
+![ASCII Moon Icon](/moon-icon-for-readme.png)ASCIIMoon
 ===============
 
 ASCIIMoon is a small web app that tracks the moon's phases and uses [ASCII art](https://en.wikipedia.org/wiki/ASCII_art) to create a basic visual representation of the moon's current appearance based on light percentage.
