@@ -1,20 +1,41 @@
 ---
+
 ---
 
 <footer>
   <br />
-  <div><a href="/">Home &gt;</a></div>
-  <br />
-  <div><a href="/about">About &gt;</a></div>
-  <br />
-  <div><a href="/privacy-policy">Privacy Policy &gt;</a></div>
-  <p>© <span id="current-year"></span>&nbsp;<span>ASCIIMoon</span></p>
+  <section class="footer-flex">
+    <div><a href="/">Home &gt;</a></div>
+    <br />
+    <div><a href="/about">About &gt;</a></div>
+    <br />
+    <div>
+      <a
+        href="https://github.com/Sean-93/asciimoon"
+        target="_blank"
+        rel="noreferrer noopener">Repo/Source &gt;</a
+      >
+    </div>
+    <br />
+    <div><a href="/privacy-policy">Privacy Policy &gt;</a></div>
+    <br />
+    <div>
+      <a
+        href="https://www.buymeacoffee.com/seanrooney"
+        target="_blank"
+        rel="noreferrer noopener">☕️ Buy me a coffee</a
+      >
+    </div>
+    <div>
+      <p>© <span id="current-year"></span>&nbsp;<span>ASCIIMoon</span></p>
+    </div>
+  </section>
 </footer>
 <style>
-  footer {
+  .footer-flex {
     display: flex;
-    margin: auto;
     justify-content: space-between;
+    margin: auto;
     align-items: center;
     max-width: 928px;
     background-color: var(--transparent-black-75);
@@ -24,10 +45,9 @@
     display: none;
   }
 
-  @media only screen and (max-width: 600px) {
-    footer {
+  @media only screen and (max-width: 767px) {
+    .footer-flex {
       display: block;
-      max-width: 480px;
     }
     br {
       display: block;
