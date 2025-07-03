@@ -36,4 +36,4 @@ Ascii art from the moon photo was generated thanks to [https://manytools.org/hac
 Website Built using the Astro Framework
 ------------------------------------
 
-This website was built using the Astro framework.  Get started buildng with Astro today at <a href="https://astro.build/" target="_blank" rel="noopener noreferrer">astro.build/</a>.
+This website was built using the Astro framework.  Get started buildng with Astro today at [https://astro.build/](https://astro.build/).
