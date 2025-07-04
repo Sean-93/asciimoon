@@ -9,12 +9,12 @@ import Layout from "../layouts/Layout.astro";
 	canonicalURL="https://asciimoon.com/404"
 	robots="noindex, follow"
 >
-	<main class="bg-slate-100">
-		<section class="p-8 max-w-xl mx-auto">
+	<main>
+		<section class="not-found-page">
 			<h1>404 Page Not Found</h1>
 			<br/>
 			<p>
-				This page cannot be found. Please return to the <a href="/"
+				This page cannot be found. Please return to the <a href="/"  title="Go back to Home Page"
 					>home page</a
 				>.
 			</p>
@@ -22,4 +22,11 @@ import Layout from "../layouts/Layout.astro";
 	</main>
 </Layout>
 
-<style></style>
+<style>
+
+	.not-found-page {
+		max-width: 928px;
+		margin: 0 auto;
+		height: 70vh;
+	}
+</style>

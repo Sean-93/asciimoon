@@ -122,14 +122,16 @@ import Footer from "../components/Footer.astro";
         background-color: var(--transparent-black-75);
       }
 
-      a:hover {
-        text-decoration: underline;
-        text-underline-offset: 0.25rem;
-        color: var(--aqua);
+      a,
+      a:visited {
+        color: var(--aqua) !important;
       }
 
-      a:visited {
-        color: var(--aqua)!important;
+      a:hover,
+      a:active {
+        text-decoration: underline;
+        text-underline-offset: 0.25rem;
+        cursor: pointer;
       }
 
       p {
@@ -155,6 +157,27 @@ import Footer from "../components/Footer.astro";
         text-decoration: underline;
         text-underline-offset: 0.5rem;
         cursor: pointer;
+      }
+
+      /* LINKS TO NEOCITES PROFILE IS DIFFERENT ON DESKTOP AND MOBILE - DESKTOP IT IS IN NAVBAR BUT MOBILE IT IS IN THE FOOTER */
+
+      .neocities-icon {
+        width: 20px;
+        margin-right: 8px;
+      }
+
+      .neocities-link-mobile {
+        display: none !important;
+      }
+
+      @media only screen and (max-width: 767px) {
+        .neocities-link {
+          display: none !important;
+        }
+
+        .neocities-link-mobile {
+          display: flex !important;
+        }
       }
 
       @media only screen and (max-width: 600px) {
