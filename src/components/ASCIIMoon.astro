@@ -5,27 +5,30 @@
 <div class="moon-flex-container">
   <div class="left-column">
     <div>
-
       <h1>View The Moon's Daily Phases</h1>
       <p>
         View & cycle through The Moon's phases day to day - rendered in ASCII
         art.
       </p>
     </div>
-    <br/>
+    <br />
     <!-- Moon phase data will be listed here -->
-<div id="moonPhaseData">
-  <div><strong>Date:</strong> <span class="date"></span></div>
-  <div><strong>Moonlight:</strong> <span class="illumination"></span></div>
-  <div><strong>Phase:</strong> <span class="phase"></span></div>
-</div>
-<br/>
+    <div id="moonPhaseData">
+      <div><strong>Date:</strong> <span class="date"></span></div>
+      <div><strong>Moonlight:</strong> <span class="illumination"></span></div>
+      <div><strong>Phase:</strong> <span class="phase"></span></div>
+    </div>
+    <br />
     <section>
       <!-- THIS IS THE MAIN BUTTON GROUP -->
       <div class="button-group">
-        <button onclick="changeDate(-1)" title="Go to Previous Day">&lt; Previous Day</button>
+        <button onclick="changeDate(-1)" title="Go to Previous Day"
+          >&lt; Previous Day</button
+        >
         <button onclick="resetToToday()" title="Go to Today">Today</button>
-        <button onclick="changeDate(1)" title="Go to Next Day">Next Day &gt;</button>
+        <button onclick="changeDate(1)" title="Go to Next Day"
+          >Next Day &gt;</button
+        >
       </div>
     </section>
     <br />
@@ -144,7 +147,6 @@
     height: fit-content;
     box-shadow: 0 0 100rem var(--transparent-aqua-25);
     aspect-ratio: 1/1;
-    
   }
 
   #moonPhaseData {
@@ -178,10 +180,10 @@
     height: 100%;
     box-sizing: border-box;
     background-color: var(--black);
-       margin-left: -1.5rem;
+    margin-left: -1.5rem;
   }
 
-    @media only screen and (max-height: 768px) {
+  @media only screen and (max-height: 768px) {
     .moon-flex-container {
       height: auto;
       height: 80vh;
@@ -202,10 +204,10 @@
       max-width: auto;
       margin: 0 auto;
     }
-      .button-group {
-    display: grid;
-    grid-template-columns: auto auto auto;
-  }
+    .button-group {
+      display: grid;
+      grid-template-columns: auto auto auto;
+    }
   }
 
   @media only screen and (max-width: 600px) {
@@ -228,12 +230,46 @@
   }
 
   @media only screen and (max-width: 350px) {
+    .moon-flex-container {
+      margin-top: 8px;
+    }
+
     pre {
       font-size: 0.3vh;
     }
+  }
+
+  @media only screen and (max-width: 300px) {
+    pre {
+      font-size: 0.6vh;
+    }
+
+    h1 {
+      margin-top: -8px;
+    }
+
+    .button-group {
+      display: grid;
+      grid-template-columns: auto;
+      row-gap: 12px;
+    }
+  }
+
+  @media only screen and (max-width: 200px) {
+    pre {
+      font-size: 0.7vh;
+    }
+
+    h1 {
+      margin-top: -16px;
+    }
+
+    button {
+      font-size: 0.5rem;
+    }
 
     #moonPhaseData {
-      padding: 0.5rem;
+      font-size: 0.5rem;
     }
   }
 </style>
@@ -289,10 +325,10 @@
     moonShadow.style.transform = `translateX(${translateValue}%)`;
 
     const list = document.getElementById("moonPhaseData");
-list.querySelector(".date").textContent = date.toISOString().split("T")[0];
-list.querySelector(".illumination").textContent = `${moonData.illumination}%`;
-list.querySelector(".phase").textContent = moonData.phaseName;
-
+    list.querySelector(".date").textContent = date.toISOString().split("T")[0];
+    list.querySelector(".illumination").textContent =
+      `${moonData.illumination}%`;
+    list.querySelector(".phase").textContent = moonData.phaseName;
   }
 
   function changeDate(days) {

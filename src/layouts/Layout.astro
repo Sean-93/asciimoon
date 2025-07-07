@@ -185,7 +185,6 @@ import Footer from "../components/Footer.astro";
           font-size: 0.85rem;
           max-width: 320px;
           margin: auto;
-          /* text-align: center; */
         }
 
         .main-container {
@@ -194,6 +193,54 @@ import Footer from "../components/Footer.astro";
 
         h1 {
           font-size: 1.25rem;
+        }
+      }
+
+      @media only screen and (max-width: 300px) {
+        body {
+          max-width: 200px;
+        }
+
+        body *{
+                    background-color: var(--transparent-black-75);
+        }
+
+        .main-container {
+          display: block;
+        }
+
+        h1 {
+          font-size: 1.25rem;
+        }
+
+        a {
+          word-break: break-word;
+        }
+      }
+
+      @media only screen and (max-width: 200px) {
+        body {
+          max-width: 100px;
+          font-size: 0.5rem;
+        }
+
+        h1 {
+          font-size: 0.85rem;
+        }
+
+        h2 {
+          font-size: 0.75rem;
+        }
+
+        a {
+          text-decoration: none;
+          font-size: 0.5rem;
+          background-color: var(--transparent-black-75);
+        }
+
+        .neocities-icon {
+          width: 16px;
+          margin-right: 6px;
         }
       }
     </style>

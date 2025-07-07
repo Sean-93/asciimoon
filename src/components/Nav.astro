@@ -5,6 +5,7 @@
 <nav>
   <a href="/" class="flex-link logo-link" title="Go to Home Page"
     ><img
+      class="moon-icon"
       src="/moon-favicon.png"
       alt="ASCII Moon Icon"
       style="margin-right: .5rem;"
@@ -35,6 +36,7 @@
     background-color: var(--transparent-black-75);
     padding-top: 24px;
   }
+
   .flex-link {
     display: flex;
     align-items: center;
@@ -46,5 +48,26 @@
     text-decoration: none !important;
     letter-spacing: -0.1rem;
     font-weight: 900;
+  }
+
+  @media only screen and (max-width: 500px) {
+    nav {
+      padding-top: 12px;
+    }
+  }
+
+  @media only screen and (max-width: 200px) {
+    nav {
+      padding-top: 4px;
+    }
+
+    .logo-link {
+      font-size: 1rem;
+    }
+
+    .moon-icon {
+      width: 16px;
+      height: 16px;
+    }
   }
 </style>
