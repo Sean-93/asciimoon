@@ -190,10 +190,11 @@
     }
   }
 
-  @media only screen and (max-width: 768px) {
+  @media only screen and (max-width: 928px) {
     .moon-flex-container {
       height: auto;
       margin-top: 24px;
+      flex-direction: column-reverse;
     }
 
     #moonPhaseData {
@@ -211,16 +212,9 @@
   }
 
   @media only screen and (max-width: 600px) {
-    .moon-flex-container {
-      flex-direction: column-reverse;
-    }
 
     #moonContainer {
       margin-bottom: 24px;
-    }
-
-    #moonPhaseData {
-      /* text-align: center; */
     }
 
     pre {
