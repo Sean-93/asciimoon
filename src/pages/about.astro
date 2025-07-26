@@ -97,7 +97,7 @@ import Layout from "../layouts/Layout.astro";
         >.
       </p>
     </section>
-        <hr />
+    <hr />
     <section>
       <h2>Follow on Neocities</h2>
       <p>
@@ -110,27 +110,6 @@ import Layout from "../layouts/Layout.astro";
     </section>
   </main>
 </Layout>
-
-<!-- JSON-LD SCHEMA-->
-<script type="application/ld+json">
-  {
-    "@context": "http://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "ASCIIMoon",
-    "headline": "About ASCIIMoon | Moon Phase Tracker",
-    "description": "ASCIIMoon tracks the moon's phases and uses ASCII art to create a basic visual representation of the moon's current appearance based on light percentage.",
-    "keywords": "moon phases, ASCII moon, moon tracker, moon phase tracker, ASCII art, lunar phases, moon calendar, moon cycle, moon phase app, phase of the moon",
-    "author": { "@type": "Person", "name": "Sean Rooney" },
-    "publisher": { "@type": "Person", "name": "Sean Rooney" },
-    "datePublished": "2025-07-06T14:00:00-07:00",
-    "url": "https://asciimoon.com/about",
-    "mainEntityOfPage": "https://asciimoon.com/about",
-    "robots": "index, follow",
-    "operatingSystem": "Web-based",
-    "applicationCategory": "Utility",
-    "softwareVersion": "1.0"
-  }
-</script>
 <style>
   main {
     max-width: 928px;
@@ -138,3 +117,34 @@ import Layout from "../layouts/Layout.astro";
     text-align: left;
   }
 </style>
+
+<!-- JSON-LD SCHEMA-->
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": "https://asciimoon.com/about#webpage",
+    "name": "About ASCIIMoon",
+    "url": "https://asciimoon.com/about",
+    "description": "ASCIIMoon tracks the moon's phases and uses ASCII art to create a basic visual representation of the moon's current appearance based on light percentage.",
+    "keywords": "moon phases, ASCII moon, moon tracker, moon phase tracker, ASCII art, lunar phases, moon calendar, moon cycle, moon phase app, phase of the moon",
+    "inLanguage": "en",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://asciimoon.com/about"
+    },
+    "sameAs": ["https://github.com/Sean-93/asciimoon"],
+    "publisher": {
+      "@type": "Organization",
+      "@id": "https://asciimoon.com/#website",
+      "name": "ASCIIMoon",
+      "url": "https://asciimoon.com/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://asciimoon.com/moon-favicon.png",
+        "width": 32,
+        "height": 32
+      }
+    }
+  }
+</script>

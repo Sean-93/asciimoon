@@ -16,24 +16,33 @@ import Layout from "../layouts/Layout.astro";
   </main>
 </Layout>
 
-<style></style>
 <!-- JSON-LD SCHEMA-->
 <script type="application/ld+json">
   {
-    "@context": "http://schema.org",
-    "@type": "SoftwareApplication",
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": "https://asciimoon.com/#website",
     "name": "ASCIIMoon",
-    "headline": "Moon Phase Tracker | Rendered in ASCII Art",
+    "url": "https://asciimoon.com/",
     "description": "ASCII Moon - view & cycle through The Moon's phases - rendered in ASCII art.",
     "keywords": "moon phases, ASCII moon, moon tracker, moon phase tracker, ASCII art, lunar phases, moon calendar, moon cycle, moon phase app, phase of the moon",
-    "author": { "@type": "Person", "name": "Sean Rooney" },
-    "publisher": { "@type": "Person", "name": "Sean Rooney" },
-    "datePublished": "2025-07-06T14:00:00-07:00",
-    "url": "https://asciimoon.com/",
-    "mainEntityOfPage": "https://asciimoon.com/",
-    "robots": "index, follow",
-    "operatingSystem": "Web-based",
-    "applicationCategory": "Utility",
-    "softwareVersion": "1.0"
+    "inLanguage": "en",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://asciimoon.com"
+    },
+    "sameAs": ["https://github.com/Sean-93/asciimoon"],
+    "publisher": {
+      "@type": "Organization",
+      "@id": "https://asciimoon.com/#website",
+      "name": "ASCIIMoon",
+      "url": "https://asciimoon.com/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://asciimoon.com/moon-favicon.png",
+        "width": 32,
+        "height": 32
+      }
+    }
   }
 </script>
