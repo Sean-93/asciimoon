@@ -23,7 +23,7 @@ import Footer from "../components/Footer.astro";
     <!-- FAVICON -->
     <link rel="icon" type="image/svg" href="/moon-favicon.png" />
     <!-- META THEME COLOR -->
-     <meta name="theme-color" content="aqua" />
+    <meta name="theme-color" content="aqua" />
     <!-- GENERIC METADATA -->
     <meta name="author" content="Sean Rooney" />
     <meta name="generator" content={Astro.generator} />
@@ -57,8 +57,8 @@ import Footer from "../components/Footer.astro";
       /* RANDOM UI COLORS ON LOAD */
       h1,
       h2,
-      div,
-      p {
+      p,
+      div {
         scale: 100%;
         animation: scale_up_everything 1s ease-in alternate;
         /* Use a CSS variable for color */
@@ -201,8 +201,8 @@ import Footer from "../components/Footer.astro";
           max-width: 200px;
         }
 
-        body *{
-                    background-color: var(--transparent-black-75);
+        body * {
+          background-color: var(--transparent-black-75);
         }
 
         .main-container {
@@ -245,6 +245,16 @@ import Footer from "../components/Footer.astro";
       }
     </style>
     <script is:inline>
+      // MARQUEE IN TAB
+
+      const base = document.title;
+      let text = base + "     ";
+
+      setInterval(() => {
+        text = text.slice(1) + text[0];
+        document.title = text;
+      }, 300);
+
       // META BROWSER FIX
 
       // FOR SOME REASON, ASCII ART GETS MESSED UP WHEN VIEWING A SITE THROUGH A META/FB/INSTA BROWSER WHEN USING AN ANDROID- IT MAKES THE ASCII ART WAAAAY TOO BIG, SO THIS IS HERE TO CORRECT THAT
