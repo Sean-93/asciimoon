@@ -1,5 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
 ---
 
 <Layout
@@ -7,8 +9,10 @@ import Layout from "../layouts/Layout.astro";
   description="Privacy Poilicy for ASCIIMoon"
   keywords=""
   canonicalURL="https://asciimoon.com/privacy-policy"
-  robots="index, follow"
+  robots="noindex, follow"
 >
+<!-- NAVBAR -->
+<Nav/>
   <main>
     <div>
       <h1>Privacy Policy</h1>
@@ -61,6 +65,8 @@ import Layout from "../layouts/Layout.astro";
       </p>
     </div>
   </main>
+  	<!-- FOOTER -->
+	<Footer/>
 </Layout>
 <style>
   main {

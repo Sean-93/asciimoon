@@ -1,6 +1,8 @@
 ---
-import ASCIIMoon from "../components/ASCIIMoon.astro";
 import Layout from "../layouts/Layout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import ASCIIMoon from "../components/ASCIIMoon.astro";
 ---
 
 <Layout
@@ -10,10 +12,14 @@ import Layout from "../layouts/Layout.astro";
   canonicalURL="https://asciimoon.com/"
   robots="index, follow"
 >
+<!-- NAVBAR -->
+<Nav/>
   <main>
     <!-- H1 AND P TAG FOR DESC ARE IN THE <ASCIIMoon> ELEMENT -->
     <ASCIIMoon />
   </main>
+  	<!-- FOOTER -->
+	<Footer/>
 </Layout>
 
 <!-- JSON-LD SCHEMA-->

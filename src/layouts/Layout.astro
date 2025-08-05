@@ -8,10 +8,6 @@ interface Props {
 }
 
 const { title, description, keywords, canonicalURL, robots } = Astro.props;
-
-// COMPONENTS
-import Nav from "../components/Nav.astro";
-import Footer from "../components/Footer.astro";
 ---
 
 <!doctype html>
@@ -48,11 +44,8 @@ import Footer from "../components/Footer.astro";
     <title>{title}</title>
   </head>
   <body>
-    <!-- SITE NAVBAR -->
-    <Nav />
+    <!-- NAVBAR AND FOOTER ARE IMPORTED DIRECTLY IN THE PAGE FILES SO THEY AREN'T RENDERED IN THE WIDGET -->
     <slot />
-    <!-- SITE FOOTER -->
-    <Footer />
     <style is:global>
       /* RANDOM UI COLORS ON LOAD */
       h1,
@@ -314,11 +307,10 @@ import Footer from "../components/Footer.astro";
       const colors = [
         "aqua",
         "cyan",
-        "deepskyblue",
         "skyblue",
         "lightskyblue",
         "turquoise",
-        "aquamarine",
+        "aquamarine"
       ];
 
       const randomColor = colors[Math.floor(Math.random() * colors.length)];

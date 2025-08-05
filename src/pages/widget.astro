@@ -1,15 +1,16 @@
 ---
+import ASCIIMoon from "../components/ASCIIMoon.astro";
+import Layout from "../layouts/Layout.astro";
 ---
 
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>ASCIIMoon Widget Version</title>
-</head>
-<body>
-<div style="display:flex; justify-content:flex-end; width:100%;">
-  <img src="/asciimoon-logo.jpg" width="300" height="300" />
-</div>
-
-</body>
-</html>
+<Layout
+  title="ASCIIMoon Widget Version"
+  description="Privacy Poilicy for ASCIIMoon"
+  keywords=""
+  canonicalURL="https://asciimoon.com/widget"
+  robots="noindex, follow"
+>
+  <main>
+    <ASCIIMoon />
+  </main>
+</Layout>
