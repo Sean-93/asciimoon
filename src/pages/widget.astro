@@ -11,6 +11,39 @@ import Layout from "../layouts/Layout.astro";
   robots="noindex, follow"
 >
   <main>
+    <br />
+    <div class="widget-logo-container">
+      <img
+        class="moon-icon"
+        src="/moon-favicon.png"
+        alt="ASCII Moon Icon"
+        style="margin-right: .5rem;"
+        width="32"
+        height="32"
+      /><span>ASCIIMoon</span>
+    </div>
+    <br />
     <ASCIIMoon />
   </main>
+  <style>
+    .widget-logo-container {
+      display: flex;
+      align-items: center;
+      color: var(--aqua) !important;
+      font-size: 1.5rem;
+      letter-spacing: -0.1rem;
+      font-weight: 900;
+    }
+
+    @media only screen and (max-width: 200px) {
+      .widget-logo-container {
+        font-size: 1rem;
+      }
+
+      .moon-icon {
+        width: 16px;
+        height: 16px;
+      }
+    }
+  </style>
 </Layout>
