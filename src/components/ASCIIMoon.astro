@@ -212,7 +212,6 @@
   }
 
   @media only screen and (max-width: 600px) {
-
     #moonContainer {
       margin-bottom: 24px;
     }
@@ -317,12 +316,15 @@
       moonData.phase < 0.5 ? -(100 - illumination) : 100 - illumination;
 
     moonShadow.style.transform = `translateX(${translateValue}%)`;
-
+    console.log("Current Moon Data:");
     const list = document.getElementById("moonPhaseData");
     list.querySelector(".date").textContent = date.toISOString().split("T")[0];
+    console.log("Date: " + date.toISOString().split("T")[0]);
     list.querySelector(".illumination").textContent =
       `${moonData.illumination}%`;
+    console.log("Moonlight: " + moonData.illumination + "%");
     list.querySelector(".phase").textContent = moonData.phaseName;
+    console.log("Current Phase: " + moonData.phaseName);
   }
 
   function changeDate(days) {

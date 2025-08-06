@@ -215,7 +215,7 @@ const { title, description, keywords, canonicalURL, robots } = Astro.props;
         body {
           max-width: 100px;
           font-size: 0.5rem;
-          background-image: none!important;
+          background-image: none !important;
         }
 
         h1 {
@@ -239,6 +239,11 @@ const { title, description, keywords, canonicalURL, robots } = Astro.props;
       }
     </style>
     <script is:inline>
+      // CONSOLE MESSAGE
+      console.log(
+        "Thanks for visiting ASCIIMoon!"
+      );
+
       // MARQUEE IN TAB
 
       const base = document.title;
@@ -257,12 +262,12 @@ const { title, description, keywords, canonicalURL, robots } = Astro.props;
         const userAgent =
           navigator.userAgent || navigator.vendor || window.opera;
 
-        // Consolidated condition
         if (
           /android/i.test(userAgent) &&
           (userAgent.includes("FBAN") ||
             userAgent.includes("FBAV") ||
-            userAgent.includes("Instagram"))
+            userAgent.includes("Instagram") ||
+            /KAKAOTALK/i.test(userAgent))
         ) {
           const moonContainer = document.getElementById("moonContainer");
 
@@ -311,7 +316,7 @@ const { title, description, keywords, canonicalURL, robots } = Astro.props;
         "skyblue",
         "lightskyblue",
         "turquoise",
-        "aquamarine"
+        "aquamarine",
       ];
 
       const randomColor = colors[Math.floor(Math.random() * colors.length)];
