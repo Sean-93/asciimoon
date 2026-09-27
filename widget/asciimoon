@@ -1,0 +1,469 @@
+#!/usr/bin/env python3
+"""asciimoon - the ASCIIMoon site as a terminal / Hyprland rice widget.
+
+Renders the Galileo moon ASCII art from asciimoon.com in your terminal, with
+the moon's current phase shaded in. Pure Python standard library, one file.
+
+  asciimoon                 print today's moon once
+  asciimoon --watch         live widget (h/l or arrows: day, t: today,
+                            space: animate a lunar month, q: quit)
+  asciimoon --waybar        JSON for a Waybar custom module
+  asciimoon --help          all options
+"""
+
+import argparse
+import datetime as dt
+import html
+import json
+import math
+import os
+import select
+import shutil
+import signal
+import sys
+import time
+
+# ---------------------------------------------------------------------------
+# Moon math: a port of SunCalc's getMoonIllumination (the library the site
+# loads from its CDN), so the widget and asciimoon.com always agree.
+# ---------------------------------------------------------------------------
+
+RAD = math.pi / 180
+DAY_S = 86400
+J1970 = 2440588
+J2000 = 2451545
+OBLIQUITY = RAD * 23.4397
+
+
+def _to_days(when):
+    return when.timestamp() / DAY_S - 0.5 + J1970 - J2000
+
+
+def _right_ascension(l, b):
+    return math.atan2(math.sin(l) * math.cos(OBLIQUITY) - math.tan(b) * math.sin(OBLIQUITY), math.cos(l))
+
+
+def _declination(l, b):
+    return math.asin(math.sin(b) * math.cos(OBLIQUITY) + math.cos(b) * math.sin(OBLIQUITY) * math.sin(l))
+
+
+def _sun_coords(d):
+    m = RAD * (357.5291 + 0.98560028 * d)
+    c = RAD * (1.9148 * math.sin(m) + 0.02 * math.sin(2 * m) + 0.0003 * math.sin(3 * m))
+    l = m + c + RAD * 102.9372 + math.pi
+    return _declination(l, 0), _right_ascension(l, 0)
+
+
+def _moon_coords(d):
+    lon = RAD * (218.316 + 13.176396 * d)
+    anomaly = RAD * (134.963 + 13.064993 * d)
+    f = RAD * (93.272 + 13.229350 * d)
+    l = lon + RAD * 6.289 * math.sin(anomaly)
+    b = RAD * 5.128 * math.sin(f)
+    dist = 385001 - 20905 * math.cos(anomaly)
+    return _declination(l, b), _right_ascension(l, b), dist
+
+
+def moon_illumination(when):
+    """Return (fraction lit 0..1, phase 0..1) exactly like SunCalc."""
+    d = _to_days(when)
+    s_dec, s_ra = _sun_coords(d)
+    m_dec, m_ra, m_dist = _moon_coords(d)
+    sun_dist = 149598000
+    phi = math.acos(math.sin(s_dec) * math.sin(m_dec) + math.cos(s_dec) * math.cos(m_dec) * math.cos(s_ra - m_ra))
+    inc = math.atan2(sun_dist * math.sin(phi), m_dist - sun_dist * math.cos(phi))
+    angle = math.atan2(
+        math.cos(s_dec) * math.sin(s_ra - m_ra),
+        math.sin(s_dec) * math.cos(m_dec) - math.cos(s_dec) * math.sin(m_dec) * math.cos(s_ra - m_ra),
+    )
+    fraction = (1 + math.cos(inc)) / 2
+    phase = 0.5 + 0.5 * inc * (-1 if angle < 0 else 1) / math.pi
+    return fraction, phase
+
+
+# Same thresholds as ASCIIMoon.astro's getMoonPhaseName.
+PHASES = [
+    (0.03, "New Moon", "🌑"),
+    (0.22, "Waxing Crescent", "🌒"),
+    (0.28, "First Quarter", "🌓"),
+    (0.48, "Waxing Gibbous", "🌔"),
+    (0.52, "Full Moon", "🌕"),
+    (0.72, "Waning Gibbous", "🌖"),
+    (0.78, "Last Quarter", "🌗"),
+    (0.97, "Waning Crescent", "🌘"),
+    (1.01, "New Moon", "🌑"),
+]
+SOUTH_EMOJI = {"🌒": "🌘", "🌓": "🌗", "🌔": "🌖", "🌖": "🌔", "🌗": "🌓", "🌘": "🌒"}
+
+
+def phase_name(phase, south=False):
+    for limit, name, emoji in PHASES:
+        if phase < limit:
+            return name, SOUTH_EMOJI.get(emoji, emoji) if south else emoji
+    return "New Moon", "🌑"
+
+
+def next_events(when):
+    """Hours until the next full and new moon (1 hour resolution)."""
+    full = new = None
+    _, prev = moon_illumination(when)
+    for h in range(1, 24 * 31):
+        _, cur = moon_illumination(when + dt.timedelta(hours=h))
+        if full is None and prev < 0.5 <= cur:
+            full = h
+        if new is None and cur < prev:
+            new = h
+        if full is not None and new is not None:
+            break
+        prev = cur
+    return full, new
+
+
+def fmt_hours(h):
+    if h is None:
+        return "?"
+    return f"{h // 24}d {h % 24}h" if h >= 24 else f"{h}h"
+
+
+# ---------------------------------------------------------------------------
+# The art: the site's ASCII rendering of NASA's Galileo photo (PIA00405).
+# ---------------------------------------------------------------------------
+
+MOON_ART = r"""
+                                                                                    #@&&%#%&(#&###&%###&&&&#/(@&(###.  %/#,                                                                             
+                                                                            #&%%#&@%(&%##(*%&%##(###&&%&%#(#%&%%%&%###%(%#(#((@&&&(/.                                                                   
+                                                                   .%&&##%###/%%#%%#&,%%&%%%%#%%%%%%&&&&%%%%##%&(#(%&(###%/##&##%(*(&%@#%*%/                                                            
+                                                             /#/%&%#%(@%##%(((#&&&%%%%&%%%%&%&&&&&&&%%%%%%%%%%%#####%#%&#%#%%%%%%%%&&&&%%.%%%%%*(                                                       
+                                                       ,(.@&%((#(@%#&%###(####((%&%%%%%%%&&&&&&&#&&&&&%%%##%###%####(%#%##%#%%%%%%&&%&&(%&&&&%&&%&&&#,                                                  
+                                                   /(*/**,.%#((((*###%###((###%##%(%%%#%%%%%%%%%%%%#%%%%%%##%########%(####%%%%%%%%%&&&&%#%%%&%%&%%%%%%&#&                                              
+                                               /*/((%%(#####((%((((((((#((#(##(###########%#%%#&%###%##(#%%%%#####(#%#(((##&#%##%%&&&%&%%%%%%%%#%/#%(#(/%%%###                                          
+                                           ,*/,(/%/#/((#((((/(((((*//(////((#((#//(/((((#########(#(##(#(##(##(#((###(#######%%%&&&&%%%&%%#%####&#%%#/*****((%((&&                                      
+                                        .,.,///((/(((/(/*((/&*////**/*//********////((((((((#(##(##((#(#(#%%((((#(#####&%###%%%%%&%&&&%%%%%#%%###(((##(*,,,/((##/####                                   
+                                     .,,,**////*********,,,*,**//(//***********//*****/*,**////((/((///((((((((((##(####%#((###%%%%%&&&&%%%&####%&(((((##((%####%((%(#&*                                
+                                  ..,,,*,*,*,.,******//******,,*///////*****/******/********/////*/(/((///////(/(((//(/((((((((((#%%%%%&%&%%&%((#%#%(#(###(((#((#(##((#%%*@                             
+                               ,..,.,,,*,*....,,,*//(*/////((/(((((//(/**/*/***/((((((///**///////////((///////**(////*********(#/###%#%%%%#%&%///(%####(##(//(((((#((#(/(#(*                           
+                             ......,,,,,*,,.,,,****#&(((((#((/////(#//*/((####((//((//(((((((///////////(///////*//*/*/*/*******//((##%#%%#%%(#%%#%%%#(((#%##(##(%(#((((##(%*#*#                        
+                           ........,,,,**,*/*///(((((((%#/////(/(%/////**//##(#*,,,*#/(/(%%%#*//((/////////*/////*////***/******(((((#%##%########%(((##((###%%(#((%(((###%((#((%#                      
+                        ..........,,....,*///((//(((%##((((//(/(/*****,,,,***//(*/((*/(((#(####((#////(////###(#(((///(*///#((///###%####%#(##%####(///((####%###(##/(((####(##%#,%%                    
+                      .........,........,/(//((//#(,,,,,**,**//**,,,,,,,,,**/******//(#%((((((##((/(/*/////(#(/(((//(((((((/////(###(%%%####%%%#%&##((/(/*//((#(*((##(######(((((##(#@                  
+                    ...............,..,***/*////(/*,,,,*,,,,,.....,,,,,,,,************//(#%(#(##(((///((((/(((((((#(((((////////#(((###(#####%###%##((((((((((/#((/((##%&%%##(((%(%/(#(%                
+                   ..................**/////*/(//,,,,.,,,,,........,,,*,,,,**,*,********//#/((###(##((((##((###(%#####(///(##(/#((//(((((((((########(#(##(%#((#%((##(#((%####(##%###((%%               
+                 ...............,,,,*//**//*//*,**,.............,,.,,,,,,,***,*#,****/****##(((((###(((((###%##%(((#(((///////#(#((%(#(((((((((#######(///%##(#((###(#(((#((((((#(%#(#(//(#             
+               ..,,............,,,,*******(/,,...,......,..,..,,,,,.,,,,**,,,,,*,***/*****/%(/(#/####((#(##(####((#(/((/(/#//###(((((//(//(#%#####%#%##/##((###%#%#((((#(//((((#/((##(((#((,            
+              ................,.,,,,**,***,,,.,,,,,,................,,,,/,,,,,,********#//////###/(((###%%(((###((((/(/****/(///((/(///*(//(%#((#####((((########%%##(%(((((##((((#####%##((((          
+            /*..............,,..,,.,.,*,,...,...,......,........,.,.,,,,*,,,,,*******//////////////#%%%%####(##((#(((((/**/*////((((((****/(#%###((((#####(%#%##%%&%#%(#((##%/#%(##((##(%%##(##         
+           (.,.........,.,..,,,,...,,*,,....,,,,,,,,.,,,.......,,,,,,,,,**,,,,,,****///*////*(/((/(###(#(/****//(((((((/***(//***(//**/***//(((#%##%%%###(((##((##%%%##((((((###%(#########(#///        
+           ..........,...,,,,,,,,,,,,,,..,,,,,,,.......,..,...,,.,,,,,,,,,,,,,,,******/**//**/**//(##((**,*,,,,,****/*/(((**,,**///(/****//((///(%%%#%#%#%(#(###%#%%%((((/%(((##&#%#&###%#%%#(*//       
+         ,/.........,.,.,./,**,,,,,,,**,,,,,,,,...........,....,,,,...,,,,,,.,,*(*,***//#///***/**((#((*******,********,,***,****//(((////(####%%%#####&%%#%#(#%####%#(((##(#(#(((#(####%(#%%(##(/      
+        ..............,,*/,,,,*,,,,.,.,,,,,,,,,,,,,,.....,,,,,,,,,,,,,,,,,,,,,,,,,*****////*****//////,,,,,,,,,,*,*,,,,,**,,,,,,/(##%%((///#%#%%##%%#%##%%%##%%###%&###(######%####/%(((##%###/#((#     
+       ..............,,*//*,,****,,,,,*(,,*,,.,,,,.,,..,,,...,*,,,,,,,,,,,,,,,**///**///((///****(***,,,,...,,,,,,,,,,,***,,,,,,*/((%((((####(%%%%%%%%&###%%%%###(###((##%%#(/((/((###%###%&###/(///    
+      ...,..........,/*&&***,***,,,,,,,,,,,.,..,,,(,,,,,,,.,,,,,,,,,,,,,,,,,,,/****//////////*******,,,,,,,,,,,,,,,,,,***,,,,,,,,,**//((((#%##%##%##%%####%&%#(###%(//((/#(#((/#&*%/##(((####((##((//   
+     %.............,*,*****,,,*,,.,,..*...,,,..,,*,,,,,,,,..,,,,,,*****,,***///*/*****//(((//*/(/*/,,,*,,,,,,,,,,,,,,,*,*,,,,,....,,///(##%%%%%%%####%(##%((##(###/(((#(##*//**/(//,%((((((##%(((/##/   
+     ...............,,,,,***,,,....,,..,,..,,,,,,,,,,,,,*,..,*,,,,*/***,**/////(///****,,**//((///*,,,,,,,,,,.,,,,,,,*,,,,,,,,,,...,,,*/(###%&&%%%#%%%%#(*/((((((//((#%/*,*,,*,,*,(//((/(##((((/,,(///  
+    ................,....*,*,,.,,,,,.,,,,,*/*,,.,*,*,,,,*,,,*,,,,,,,,,,,,**//////(//**,***,*/////*,,,,,,.,,,,,,,,,,,**,,,,.,,,,,,,.,**////%(#%%###%####(#/(#((/(((//(*******,,,,.,,.,*//(/%(//((*,,,,*. 
+    .......................,***,,.,,.,,,*,*****,*,***,,,,**,**,,,,*,*,,,,,,,,*/(/////(//*/(/((%(/**.,,.......,,,,,,,*,,,,,,,,,,,,,,.,,*////(((#(//#(%#%#(#/(#((((((((****,*,,,,,.....*.,(/(##//(//,.,,,/ 
+    ,,...............*....,,,*,,,*...,..,,,*/*,*,**,,,/(,*,,,**,,,,,*,,,,,,,,,,,***/(#((%##(((///*,,..........,.,,,**,,,,,,,.,,,,,,,,.(,*/(#((((/**//%&#(/#(##(####(/***,,,,,,,,,....,..*#(##(/,/**...,* 
+    /,*...................,,,,****..,,,.***,,*,,**,***,,,**,*,*,**,,**,,,,*,,,,,,,**(/((#(##(//*/**,,......,,,,,,,,,*,,,,,,,,,,,,,,.,.,**/(((/////**/((#((####%#&#%#((/*,,,,,,,,,.....,,,(((##(#/,//,*,,/*
+    */,...................,,,,,,/*,,..,,*******/**/****,**,********,,,*/*,,.,,/*,/((/((///(((////*,*,,,..,/....,,,,,,,,,,,.,,,,,,,....,/*//////,,******,*/(((%&&&%&&%%#/*,,,,,..,....,*((/((###/(#(//(**/*
+    (*,...............,,.,,,*****,,..*/***(##///////**/******/*//*********,,/(/((////(//(/**//*,**,/*,****,/**,,,,,,,*,,,,,,,...,,,.,...,,/*******,,,,,//(((((((#%%%#/(/*,,*.,,..,....,/##(*((((((((/*,*/*
+    (*,..................,,,******,*,*,,***/(*(/*/(((///(*//*//*/((/**/////////////////****,********,,,,**,,,*,/(/(*.,,(,.,,......,,,,.....,,***,,,,,,,,*//(%((/(#&%#%#/**,,,,,,,,.,.,*(#/((#,(((((/(//***
+    (*#*...................*,*//**/**.,,,*///((((//*(((#((((///*///(///*,*,,,,***/////**,,,,,,,,,,,,,*/((/****,,,/(((#/***/*..,/*..........,....,,..,,...*,/(/((/(##%%#%#(///,,.,,,,,///#((/,*(,/(#/#(/(*,*
+    /(/*,..........,....,.,**///(//**,,,,**((/(#(((///###((((///////*//*****,,,,,,,****,,,,*,,,,,,,,,,/#((/*,,**/**,#**/*,...............,.,,................,,*/((//#####(###//*(/#/(////#,.(,,//(((#//..,
+    *((*................,***//#(////**,,****//(//(((#%%%&%(///(/////*/******,,,,,...,,*,,,,,,,,,,...,,,**/****/////,*,.,..............,..,................**...*,**/(######(##(((((((//*,/,.**/,#//(/#/,...
+    ,(#,.................,,***/(((/**,,,,*,,**/(((((#%%%%%%(///////////***,,,,,,.,..,,***,,,,..,,.....,**,,//*///#///,,............,,*,,................*...,,//*/*****/(((((((/(((((((/(//*//,#/*/(/%(,,.,
+    #*,.................,*,,/*////,,**//**#***//(//*/////*//////**//****,,,,**,,***///////***,,,,,.,.,****,((/(/**//*,,.....................,.............*/*,*****,*,***/((%####(((*(/((,(////,**//**....
+    /**..................,**,,,/,,,******/*//*///*////**/*********/*//,,**,,,****//////((#///**//******,**((((((/(/**,.........,,,,......................,,..,**//*//,,*,..*/(/((//(**/#*,/*((////*//*,.,*
+    *,(*,.................***,#/,,,*/**,*,****//////*/****//,,.,,,***,.....,,***((#((///(////((/**//,/((//((#((#(//***,...,*,.,,,.........,,......,.*,,,,,.,,,******,*,........,*.,,,***,,*/*/(/(**//,,,*,
+    ../*/.................*..,,,,,,,,,**,,***///*//(//*****,**,,,,,**,,..,,,,****/////*/(*//(####((#(##((###((#((////,*,.,,,,,..........,..*,,,.,,*,,,,.,,,,*****,,,,..,..........,,/***/,//(/////((*,,,* 
+    ,/%**/.....,......,........,,,,.*,,**/**,****/((///*//**,**,**,,,,,,,,,*,.***/,**//(((/(#((((((##%%%%%#%((/(/*/***,,,...........,....,,*,,*,,,..,,.,,,,*,**..,,,............,,,,,**/*/(///(/////*..* 
+    */(**,......,........,......,,*,.,,,,*/******///*/((///***,,****,*****,**,,*/,******//(((((####(#%%&%%%%#(((///(/*//,,.,.,,,,,......,,,,,(#((%,,/,*,,,*/,,.,,.,,.........,,,,,,,,*(//(//*////////**  
+    //#//,.....*.,(............,,,,,*,,**,***********/((///*****,***,*/*////**(*,,,**/**//((###%%%###%%%%%####(#(////*,**,,,,,,,,,,,,,,*.,*/&%####(/((/*((*,,,,,.,,.....,,..,,,,**,,**//*//**////////*  
+    ,/%/(*,.,............,,....,,,,,,,,,***,*,,,,,****///(/*//*******///(((((///*****//(((###(%(#%%###%%#######&#((((((##(/*/*,*,,*,,,,,*//(#((((%(#%(//***,,,,,,.,...,...,,,,*,,,,*////(/////(//////   
+     (*/#(,...,...,...,...,,...,,*,.,,*(,,*,,*,,,/(*,////////***(//(((((//(##((((((/(//(((((#####&###################%#%###(#(#(*/*,,,,,*((#((((((((/(#/(((*,,,,.,,.....,...,,*,/(###((///(///(/##/(,   
+      (/(%(*,,**..,..,...,.....,.,*,,/////*,,*,,,,/***/(/*//**/,**(##%#(#((###((#((((((((((###%######(####%##%###%##%%%%%%%%%%(((****/*(/((((#((#(((((///**//,/.,,,,,..,..*****/#(%%#/(##/(/////////    
+       ///(//***#,,,.,.,,*,,.....,.,****//,...,,***,*///////(***,**/((###((((###%###((#(((((#####%############%%%##%&&%%&%#((//***/*****/(((((((###%#((((//*,/*,..,.....,,****/((##(/(////(///(///*     
+        (((((//**,,,***/**/*,.,..,,,,,**/,,,,.,,,,,,*,**/((/*,*,.,**///((((#########(((#########%%%%%%%#%%#%%####%%%&&%%%%#((((//////*//((((((((##%&##%%/*(//((/,,,*,,,,,**,****/////(//////(//(/(      
+        .##/(/(/*,*//*///////,,,......**,,.....,,,,,,,,***///*,,,,,,***/((####(((((#(((#%(%#(##%%%&%%%###%%######%%%%%%%%####((/(((/////(//(#((#%%##(%#%#%%/*((**,,*,,,******/*/(////(////*(/////       
+          ##((//*///*//*///(/*/,,.,...,,*,*.,...,,,,,,*,*,*/#*/,*,,,**(//((#%#((/((//(#((#(#####%%########%%###%%%%#%%%%&&&%%##%%%%#((/##/*///*///(#((#%##(#/#/*/(/*//*/******//****///***///(*/        
+           ##((/(/////(///(*/*,.*(,.,....,,,#/**(*,*,,******/((,,,,,**(//((((((##(((((((#(##(((%%###########%%%&&%%%&%%%%%#%%%%%%&##(##((((/*****/**/(##((/(/#((((**(#(******//****/****////(**         
+            %%(#/////(##(/*//(/,./,,,/*,.,,//*(((*,,,****,,,/**,,,,,,*******(#((#((#((((##((####(((((##%#%%%##%%##%%##%%%%&&&&%%%%####/((/********//(&#%#%&#(/(#(/*///*****,**/*/**//***////**          
+             %###%(/((((/*,*.....,,,,.,***,,/((//*,,*,,,,,,,,*,*,,,***/*/#**((#%((###((((((##((%######%#####%##%%%###%%%%%&&&&&%&&%%#(//************(#%%#//*#((//********##((((/**///////*//            
+              .##%(#((((/,,.........**(///***//**,,*,,****,,,***,**,,,,,,**(((#########((((##(######%%%%#%%%###%#####%#%%%%&%%&&&&&%#(/(//***/******(##(#(*((/((//***,*/(#(((//////*////*(/             
+                #(((##(*%/*,,.,.......*(///*///***#(/*,***,*,,,...,,*,,,/(##(((###%###(###&%&%%##(###(#########((###%%#%#%#%%%%%&%%%##((/(/******,**/(((((#(/**/(/**////(#((*(((//(/**///,              
+                  #((#%(#(/,,,,,......,*/**,*,,*/***/******,,,,,,,,*,,,**(#(((%#####((((##%###%%(((((#######(####%#####%##%%%%%%%#%%%%%%/////#/(#%##(//(##(/#(((((/((((((/(%(#((((/****/                
+                   /((####///,*,,,..,.,,,,**,*,,*//*****,,,,*/,,,,,,,,**///#(&%####((((####((##(((((######%##%%#%##%#((##%%%%#%%%%%%%%%#((((###%%##(/((##(#(#%#(#%#((((#%#(##((((/****                  
+                     /(((#&%#(/*/,,,,,,,/****(/,,,*******,,,,,,,,,,,,,,***/*/(###%##(#####%####((#####%#%%%%%%%%#(##########%%%%&&%%#######%####((((#%###%%#%##%#%%%###(%%#((%((////                    
+                       (((((%###(/***(**//(//*(,**,,*/***,,,,,,,,,,,,,*,***/###%##((##%%%%%%######%%%%%%%%%%%%######(###%##%&&&%%%#%%#%%%&%#%#(####(##%%%%%%%%%%%%%%#%%%#(#&((///*.                     
+                         #/(((/((*(/////(//(/,,*/(///*((/*/*****//**//*(/**(###%%#%%%%%#&%%%%###%%%%%&%%%#%(#((#####%###%%%%%%%##%#%%%%%########(###%#%#(##%%%&&%%%%%%###%(////*                        
+                           ///(((/**//((/((#*/,,***//*/#%%#(#/(((****######%%%%%%%&%%%&%%&&%%%##%%%%%%%%###(#(#(###%&&%###(#%%#######%%##(####%###########%%%&%%%%&&#(((///***                          
+                              //(/((***(((//((***((***/(#%%&&#%%#%#(%#%%%&%&&&&&%%%%&&%%%&%&%%%%%##%##(########(#%&%%%%######%%%###(##(##(######%#%####%%%%%%%%%##///////***                            
+                                /,/%(((/(/##((((%#(*(###((%##%%%%%#%%%#%&%%&&&&&@@&&&&%%%%%%%%%%%%%#%##%##%%##%%%&%%####%#%%#%%##(#(####((###############%#%%####(///****                               
+                                   ////(((#(#((#(((/##%(%###%##%%##%%%%&&&&&&%%&&&&&%%%&%%%%%&&&#%##%%%%###%%%%##%####(###%###(####(#(##########(##(#(#%#%((/(////***,                                  
+                                      /*////((###(##(##((((##%%%%%&%&%&&&&&&&&&&&&&&&%&%&%%%%%%%###%&&%#%%######%%########(###(#%%%##(####(#####%%####%((((/////***.                                    
+                                         //*//(//((#((#((#%#%%#%%%%%&&&%%%%%%&&&&&&&&&&&&&&&&&&%%%%%##(####((##%######%#%%%%%##(((####%%###%%%#%####(#(((/(///*,                                        
+                                            ./////(((##(#((####%%%%%%%%#&&&&&%%%%&&&&&&%%%&%%%%%%%&%%##%%%%%%%%#((####%##(#(###((##%#######%%%####((////((/**                                           
+                                                ***#/(((#((##((%#%%%%%&%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%####((##((((((####((#####%%%%%##%%%%%##(#(///#((/*,,                                               
+                                                    ,**(((/((((###%#%%%%%&&&&%%&&&%&&&&&&%%&%%%%#%%%%#######((#(((((#(#(((####(######(##(((////////*,                                                   
+                                                         *(((#(((###%%#%%%%%&&%%%%%%%%%%%%#&&%%%%%###%%%#((###(((####((#(###(#######(((((((/////                                                        
+                                                               ((/(####(#%%%%%%#%%%%%%%%%%##%%%%%#%######(########%##((((((((###//(((/////                                                              
+                                                                     .(((##(##%%%#%%%%%%%%%%%#%%##%%%%#((####(((((((((((/((((((////,                                                                    
+                                                                              */(%%%%%%%%%##%##########(/(((/(((((////////.
+"""
+
+RAMP = " .,*/(#%&@"  # light -> heavy, the characters the original art uses
+INK = {c: i / (len(RAMP) - 1) for i, c in enumerate(RAMP)}
+
+
+def _load_art():
+    lines = [l.rstrip() for l in MOON_ART.split("\n")]
+    rows = [i for i, l in enumerate(lines) if l.strip()]
+    lines = lines[rows[0] : rows[-1] + 1]
+    left = min(len(l) - len(l.lstrip()) for l in lines if l.strip())
+    width = max(len(l) for l in lines) - left
+    return [[INK.get(c, 0.0) for c in l[left:].ljust(width)] for l in lines]
+
+
+ART = _load_art()
+
+
+def render_cells(width, fraction, phase, cell_aspect=2.1, south=False, soft=0.06):
+    """Downsample the art to `width` columns and compute per-cell light.
+
+    Returns rows of (char, ink 0..1, light 0..1). `light` is 1 on the sunlit
+    part of the disc and 0 in shadow, with a soft band at the terminator.
+    """
+    src_h, src_w = len(ART), len(ART[0])
+    height = max(3, round(width / cell_aspect))
+    waxing = phase < 0.5
+    if south:
+        waxing = not waxing
+    # Terminator is an ellipse: x = k * sqrt(1 - y^2), k = 1 (new) .. -1 (full).
+    k = 1 - 2 * fraction
+    out = []
+    for i in range(height):
+        r0, r1 = i * src_h // height, max((i + 1) * src_h // height, i * src_h // height + 1)
+        y = (i + 0.5) / height * 2 - 1
+        half = math.sqrt(max(0.0, 1 - y * y))
+        row = []
+        for j in range(width):
+            c0, c1 = j * src_w // width, max((j + 1) * src_w // width, j * src_w // width + 1)
+            block = [v for r in ART[r0:r1] for v in r[c0:c1]]
+            ink = sum(block) / len(block)
+            char = RAMP[round(ink * (len(RAMP) - 1))]
+            x = (j + 0.5) / width * 2 - 1
+            edge = x - k * half if waxing else -k * half - x
+            light = min(1.0, max(0.0, edge / soft + 0.5)) if half > 0 else 0.0
+            row.append((char, ink, light))
+        out.append(row)
+    return out
+
+
+# ---------------------------------------------------------------------------
+# Output
+# ---------------------------------------------------------------------------
+
+
+def parse_hex(value):
+    v = value.lstrip("#")
+    if len(v) == 3:
+        v = "".join(c * 2 for c in v)
+    try:
+        return tuple(int(v[i : i + 2], 16) for i in (0, 2, 4))
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"not a hex colour: {value}")
+
+
+def _mix(a, b, t):
+    return tuple(round(x + (y - x) * t) for x, y in zip(a, b))
+
+
+def cell_colour(ink, light, lit, shadow):
+    bright = _mix(shadow, lit, 0.45 + 0.55 * ink)  # denser glyphs glow brighter
+    return _mix(shadow, bright, light)
+
+
+def ansi_moon(cells, args):
+    lines = []
+    for row in cells:
+        parts, last = [], None
+        for char, ink, light in row:
+            if args.hide_shadow and light < 0.5:
+                char = " "
+            if not args.color or char == " ":
+                parts.append(char)
+                continue
+            rgb = cell_colour(ink, light, args.moon_color, args.shadow_color)
+            if rgb != last:
+                parts.append("\x1b[38;2;%d;%d;%dm" % rgb)
+                last = rgb
+            parts.append(char)
+        lines.append("".join(parts).rstrip() + ("\x1b[0m" if args.color else ""))
+    return lines
+
+
+def info_lines(when, fraction, phase, args):
+    name, emoji = phase_name(phase, args.south)
+    full, new = next_events(when)
+    return [
+        f"{emoji} {name}",
+        f"{fraction * 100:.2f}% moonlight · {when.strftime('%Y-%m-%d')}",
+        f"full in {fmt_hours(full)} · new in {fmt_hours(new)}",
+    ]
+
+
+def waybar(when, args):
+    fraction, phase = moon_illumination(when)
+    name, emoji = phase_name(phase, args.south)
+    full, new = next_events(when)
+    cells = render_cells(args.tooltip_width, fraction, phase, args.cell_aspect, args.south)
+    art = []
+    for row in cells:
+        spans = []
+        for char, ink, light in row:
+            if args.hide_shadow and light < 0.5:
+                char = " "
+            if char == " ":
+                spans.append(" ")
+            else:
+                rgb = cell_colour(ink, light, args.moon_color, args.shadow_color)
+                spans.append('<span color="#%02x%02x%02x">%s</span>' % (*rgb, html.escape(char)))
+        art.append("".join(spans))
+    tooltip = (
+        "<tt>" + "\n".join(art) + "</tt>\n\n"
+        f"<b>{name}</b>\n{fraction * 100:.2f}% moonlight\n"
+        f"full moon in {fmt_hours(full)}\nnew moon in {fmt_hours(new)}"
+    )
+    print(json.dumps({
+        "text": f"{emoji} {fraction * 100:.0f}%",
+        "alt": name.lower().replace(" ", "-"),
+        "tooltip": tooltip,
+        "class": name.lower().replace(" ", "-"),
+        "percentage": round(fraction * 100),
+    }, ensure_ascii=False))
+
+
+def frame(when, args, cols, rows):
+    """Build a full frame of lines, sized and centred for a cols x rows area."""
+    fraction, phase = moon_illumination(when)
+    info = [] if args.no_info else info_lines(when, fraction, phase, args)
+    gap = 1 if info else 0
+    width = args.width
+    if not width:
+        room = rows - len(info) - gap
+        width = max(8, min(cols - 2, int(room * args.cell_aspect)))
+        if not args.watch:
+            width = min(width, 60)
+    moon = ansi_moon(render_cells(width, fraction, phase, args.cell_aspect, args.south), args)
+    pad = " " * max(0, (cols - width) // 2)
+    lines = [pad + l for l in moon]
+    if info:
+        lines.append("")
+        accent = "\x1b[38;2;%d;%d;%dm" % args.moon_color if args.color else ""
+        reset = "\x1b[0m" if args.color else ""
+        for l in info:
+            lines.append(" " * max(0, (cols - len(l)) // 2) + accent + l + reset)
+    top = max(0, (rows - len(lines)) // 2) if args.watch else 0
+    return [""] * top + lines
+
+
+def watch(args):
+    fd = sys.stdin.fileno() if sys.stdin.isatty() else None
+    old_tty = None
+    if fd is not None:
+        import termios
+        import tty
+
+        old_tty = termios.tcgetattr(fd)
+        tty.setcbreak(fd)
+    offset = dt.timedelta()
+    animate = args.animate
+    dirty = True
+    signal.signal(signal.SIGWINCH, lambda *_: None)
+    sys.stdout.write("\x1b[?1049h\x1b[?25l")  # alt screen, hide cursor
+    try:
+        last_draw = 0.0
+        while True:
+            now = time.monotonic()
+            if animate:
+                offset += dt.timedelta(hours=8)
+                dirty = True
+            if dirty or now - last_draw >= args.interval:
+                cols, rows = shutil.get_terminal_size()
+                when = dt.datetime.now().astimezone() + offset
+                out = frame(when, args, cols, rows)
+                sys.stdout.write("\x1b[H\x1b[2J" + "\n".join(out[:rows]))
+                sys.stdout.flush()
+                last_draw, dirty = now, False
+            timeout = 0.06 if animate else max(0.1, args.interval - (time.monotonic() - last_draw))
+            try:
+                ready = select.select([fd] if fd is not None else [], [], [], timeout)[0]
+            except InterruptedError:
+                ready = []
+                dirty = True  # SIGWINCH: terminal resized
+            if not ready:
+                continue
+            key = os.read(fd, 16).decode(errors="ignore")
+            if key in ("q", "\x1b"):
+                break
+            elif key in ("h", "\x1b[D"):
+                offset -= dt.timedelta(days=1)
+            elif key in ("l", "\x1b[C"):
+                offset += dt.timedelta(days=1)
+            elif key == "t":
+                offset, animate = dt.timedelta(), False
+            elif key == " ":
+                animate = not animate
+            dirty = True
+    except KeyboardInterrupt:
+        pass
+    finally:
+        sys.stdout.write("\x1b[0m\x1b[?25h\x1b[?1049l")
+        sys.stdout.flush()
+        if old_tty is not None:
+            import termios
+
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_tty)
+
+
+def main():
+    p = argparse.ArgumentParser(description="The ASCIIMoon, as a terminal / Hyprland widget.")
+    p.add_argument("-w", "--watch", action="store_true", help="live, centred, auto-refreshing widget")
+    p.add_argument("--waybar", action="store_true", help="print JSON for a Waybar custom module")
+    p.add_argument("-W", "--width", type=int, default=0, help="moon width in columns (default: fit terminal)")
+    p.add_argument("-d", "--date", help="show another day, YYYY-MM-DD")
+    p.add_argument("-i", "--interval", type=float, default=600, help="watch refresh seconds (default 600)")
+    p.add_argument("--animate", action="store_true", help="start --watch cycling through the month")
+    p.add_argument("--moon-color", type=parse_hex, default=parse_hex(os.environ.get("ASCIIMOON_COLOR", "#00ffff")),
+                   help="lit colour, hex (default aqua like the site; env ASCIIMOON_COLOR)")
+    p.add_argument("--shadow-color", type=parse_hex,
+                   default=parse_hex(os.environ.get("ASCIIMOON_SHADOW", "#16302f")),
+                   help="shadow colour, hex (env ASCIIMOON_SHADOW)")
+    p.add_argument("--hide-shadow", action="store_true", help="blank the dark side instead of dimming it")
+    p.add_argument("--south", action="store_true", help="southern hemisphere view (mirrored)")
+    p.add_argument("--no-info", action="store_true", help="moon only, no text")
+    p.add_argument("--no-color", dest="color", action="store_false", help="plain text output")
+    p.add_argument("--cell-aspect", type=float, default=2.1, help="terminal cell height/width ratio (default 2.1)")
+    p.add_argument("--tooltip-width", type=int, default=36, help="waybar tooltip moon width (default 36)")
+    args = p.parse_args()
+
+    if os.environ.get("NO_COLOR") or (not args.watch and not args.waybar and not sys.stdout.isatty()):
+        args.color = args.color and bool(os.environ.get("FORCE_COLOR"))
+
+    when = dt.datetime.now().astimezone()
+    if args.date:
+        day = dt.date.fromisoformat(args.date)
+        when = when.replace(year=day.year, month=day.month, day=day.day)
+
+    if args.waybar:
+        waybar(when, args)
+    elif args.watch:
+        if args.date:
+            p.error("--date can't be combined with --watch (use h/l inside the widget)")
+        watch(args)
+    else:
+        cols, rows = shutil.get_terminal_size()
+        print("\n".join(frame(when, args, cols, rows)))
+
+
+if __name__ == "__main__":
+    main()

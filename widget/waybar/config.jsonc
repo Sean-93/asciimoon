@@ -1,0 +1,9 @@
+// Add "custom/moon" to modules-left/center/right, then paste this block
+// into your Waybar config. Hover it for the ASCII moon tooltip.
+"custom/moon": {
+  "exec": "asciimoon --waybar",
+  "return-type": "json",
+  "interval": 1800,
+  "tooltip": true,
+  "on-click": "kitty --class asciimoon-big asciimoon --watch"
+}

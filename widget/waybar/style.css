@@ -1,0 +1,18 @@
+/* ASCIIMoon Waybar module. Each phase gets its own class, e.g. .full-moon */
+#custom-moon {
+  color: #00ffff;
+  padding: 0 10px;
+}
+
+#custom-moon.full-moon {
+  text-shadow: 0 0 6px rgba(0, 255, 255, 0.75);
+}
+
+#custom-moon.new-moon {
+  color: #3a6b6a;
+}
+
+/* the tooltip art needs a monospace font to line up */
+tooltip label {
+  font-family: monospace;
+}

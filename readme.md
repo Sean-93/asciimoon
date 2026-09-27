@@ -10,6 +10,17 @@ Find this website helpful or fun?
 
 * * *
 
+Desktop Widget (Hyprland / Waybar / any terminal)
+-------------------------------------------------
+
+The moon also runs in your terminal as a live widget. You can pin it to your desktop or use it as a Waybar module. See [widget/README.md](widget/README.md).
+
+```sh
+install -Dm755 widget/asciimoon ~/.local/bin/asciimoon && asciimoon --watch
+```
+
+* * *
+
 SunCalc Library for Moon Phase Calculations
 -------------------------------------------
 
